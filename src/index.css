@@ -1,13 +1,145 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding : 0 ;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,700;1,100;1,200;1,300;1,600;1,700&display=swap');
+
+
+
+:root {
+  /* colors */
+  --body-color:#E4E9F7;
+  --side-bar-color:#FFF;
+  --primary-color:rgb(68, 137, 217);
+  --primary-color-light:#F6F5FF;
+  --primary-color-light2:#8d84d9;
+  --text-color:#707070;
+  --boxshadow:rgba(31, 32, 34, 0.3) 0px 1px 2px 0px ,
+  rgba(48, 49, 50, 0.15) 0px 1px 13px 1px;
+
+  /*New colors for this current project*/
+
+  --base-color : #42A0ED;
+  --second-color : #1AE3EE;
+  
+  
 }
+
+/*HEADER LOGIN DESIGN*/
+
+.logo  {
+  width: 30px;
+  height: 30px;
+}
+
+.logo img  {
+  width: 100%;
+  height: 100%;
+}
+
+.schools-administrated {
+  gap: 10px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  padding: 12px;
+
+}
+
+.schools-administrated:hover {
+  opacity: 50;
+  cursor: pointer;
+
+}
+
+.schools-administrated .status {
+  font-size: 13px;
+  color: green;
+  background-color:#c2fbd7;
+  height: fit-content;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.school {
+  gap: 10px;
+}
+/* .school .letter-image {
+  
+  width: 60px;
+  padding-top: 15px;
+  background-color: var(--body-color);
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  border-radius: 8px;
+  font-size: 20px;
+} */
+
+.school .school-general-info{
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.school .school-general-info .students-teachers{
+ 
+  padding-bottom: 10px;
+  gap: 10px;
+  
+}
+
+.school .school-general-info .students-teachers{
+  margin-top: 5px;
+  padding-bottom: 10px;
+  gap: 3px;
+  font-size: 10px;
+  padding-right: 20px;
+  
+}
+
+.schools-list p  {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.schools-list .title  {
+  padding-bottom: 20px;
+}
+
+.students , .classroom  {
+  gap: 3px;
+}
+.dot-separation  {
+  font-size: 3px;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.school .school-general-info .students-teachers > div{
+
+  padding-right: 5px;
+  
+}
+.action  {
+  margin-top: 30px;
+  width: 391px;
+  margin-left: 30px;
+}
+/* 
+.action button  {
+  color: var(--text-color);
+  background-color: var(--body-color);
+  width: 100%;
+} */
+
+/* .action button:hover {
+  background-color: var(--base-color);
+  color: white;
+} */

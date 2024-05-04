@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import { useAuth } from "./components/common/auth/auth";
+import LoginRegisterLayout from "./components/common/common_components/lay_outs/login_layout";
+import LoginForm from "./components/common/common_components/login_register/login_page";
+
+import PrivateRoute from "./components/common/auth/protected_component";
+import MultiSchools from "./components/protected/school/multischool_page";
+import MultiStepsFromRegistration from "./components/protected/school/mutisteps_page";
 
 function App() {
+  const { authed, userRole } = useAuth();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      {/* Authentification process */}
+      <Route element={<LoginRegisterLayout />}>
+        <Route path="/" element={<LoginForm />} />
+        {/* Sign up goes here */}
+        <Route
+          path="/schools"
+          element={
+            <PrivateRoute
+              role={userRole}
+              authed={authed}
+              requiredRole={"ADMIN"}
+            >
+              <MultiSchools />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/register-school"
+          element={
+            <PrivateRoute
+              role={userRole}
+              authed={authed}
+              requiredRole={"ADMIN"}
+            >
+              <MultiStepsFromRegistration/>
+            </PrivateRoute>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
 
