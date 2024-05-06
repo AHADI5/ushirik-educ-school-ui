@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function DirectorForm({ directorData, directorAddress, onDirectorChange }) {
+export default function DirectorForm({ directorData, directorAddress, onDirectorChange , onDirAddressChange }) {
   return (
         <>
             <div className="director-info">
@@ -87,7 +87,7 @@ export default function DirectorForm({ directorData, directorAddress, onDirector
                             id="quarter"
                             className="w-full px-4 py-1.5 mb-4 rounded-lg border focus:outline-none focus:border-blue-500"
                             required
-                            onChange={onDirectorChange}
+                            onChange={onDirAddressChange}
                             value={directorAddress.quarter}
                         />
                     </div>
@@ -103,7 +103,7 @@ export default function DirectorForm({ directorData, directorAddress, onDirector
                         id="avenue"
                         className="w-full px-4 py-1.5 mb-4 rounded-lg border focus:outline-none focus:border-blue-500"
                         required
-                        onChange={onDirectorChange}
+                        onChange={onDirAddressChange}
                         value={directorAddress.avenue}
                         />
                     </div>

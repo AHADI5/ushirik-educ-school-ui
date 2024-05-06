@@ -1,13 +1,13 @@
 import AuthHeader from "../lay_outs/authentification_process/auth_header";
-import LoginProcess from "./login_process";
+import SignUpForm from "./register_form";
 
-export default function LoginForm() {
+export default function SignUpPage() {
   return (
     <div className="form-section">
       <div className="header-content">
-        <AuthHeader shown={1} />
+            <AuthHeader shown={0} />
         <div className="form flex flex-col  justify-center items-center">
-            <LoginProcess/>
+            <SignUpForm/>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange }) {
+export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange , onSchoolAddressChange }) {
   return (
     <>
         <div className="school items-center">
@@ -27,15 +27,18 @@ export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange }
                         Type <span className="text-red-500">*</span>
                         </label>
                     </div>
-                    <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        className="w-full px-2 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
-                        required
-                        onChange={onSchoolChange}
-                        value={schoolData.name}
-                    />
+                    <select 
+                         name="type"
+                         id="name"
+                         className="w-full px-4 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
+                         required
+                         onChange={onSchoolChange}
+                         value={schoolData.type}
+                        >
+                        <option value="">Type</option>
+                        <option value="PRIMARY">PRIMAIRE</option>
+                        <option value="SECONDARY">SECONDAIRE</option>
+                    </select>
                 </div>
            </div>
            <div className="flex gap-3">
@@ -85,7 +88,7 @@ export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange }
                         id="schoolQuarter"
                         className="w-full px-2 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
                         required
-                        onChange={onSchoolChange}
+                        onChange={onSchoolAddressChange}
                         value={schoolAddress.schoolQuarter}
                     />
                 </div>
@@ -101,7 +104,7 @@ export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange }
                         id="schoolAvenue"
                         className="w-full px-2 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
                         required
-                        onChange={onSchoolChange}
+                        onChange={onSchoolAddressChange}
                         value={schoolAddress.schoolAvenue}
                     />
                 </div>

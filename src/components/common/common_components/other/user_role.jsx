@@ -50,7 +50,7 @@ function ProfileDropdown() {
     };
 
     return (
-        <div className="relative inline-block text-left " ref={dropdownRef}>
+        <div className=" relative inline-block text-left " ref={dropdownRef}>
             {/* Profile picture */}
             <div
                 className=" mr-2 w-9 h-9 relative flex justify-center items-center rounded-full bg-gray-500 text-xl text-white cursor-pointer"

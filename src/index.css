@@ -143,3 +143,19 @@
   background-color: var(--base-color);
   color: white;
 } */
+
+.app-name span  {
+  letter-spacing: 0.2rem;
+}
+
+.gone {
+  color: rgb(189, 107, 107);
+}
+
+.added {
+  color: rgb(103, 103, 181);
+}
+.icon-stats > div {
+  margin-top: 10px;
+
+}

@@ -1,65 +1,76 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 import SchoolForm from './school_form';
 import DirectorForm from './director_form';
+import instance from '../../../services/axios'; // Make sure to import axios instance from the correct location
+import { jwtDecode } from 'jwt-decode'; // Check import statement, it should be 'jwtDecode' instead of 'jwt-decode'
+import token from '../../common/utilities/getToken';
 
 export default function RegisterSchoolForm() {
+  const adminEmail  = jwtDecode(token)['sub'];
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState(1);
 
-  // State for school data
   const [schoolData, setSchoolData] = useState({
     name: '',
     email: '',
     postalBox: '',
-    adminEmail: '', // Populate this from token
+    adminEmail: adminEmail,
+    type: ''  
   });
 
-  // State for school address
   const [schoolAddress, setSchoolAddress] = useState({
     schoolQuarter: '',
     schoolAvenue: '',
   });
 
-  // State for director data
   const [directorData, setDirectorData] = useState({
     firstName: '',
     lastName: '',
     directorEmail: '',
+    directorPhone: ''
   });
 
-  // State for director address
   const [directorAddress, setDirectorAddress] = useState({
     quarter: '',
     avenue: '',
   });
 
-  // Function to handle changes in school form
+  const handleSchoolAddress = (event) => {
+    const { name, value } = event.target;
+    setSchoolAddress(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleDirectorAddress = (event) => {
+    const { name, value } = event.target;
+    setDirectorAddress(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
   const handleSchoolChange = (event) => {
-    // Update school form data state
     const { name, value } = event.target;
-    setSchoolData((prevState) => ({
+    setSchoolData(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  // Function to handle changes in director form
   const handleDirectorChange = (event) => {
-    // Update director form data state
     const { name, value } = event.target;
-    setDirectorData((prevState) => ({
+    setDirectorData(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  // Function to handle next step
   const handleNextStep = () => {
     if (step === 1) {
       setStep(2);
@@ -68,39 +79,73 @@ export default function RegisterSchoolForm() {
     }
   };
 
-  // Function to handle previous step
   const handlePrevStep = () => {
     if (step === 2) {
       setStep(1);
     }
   };
 
-  // Handle form submission
+  const gatherData = () => {
+    const formData = {
+      schoolData: {
+        ...schoolData,
+        address: { ...schoolAddress }
+      },
+      directorData: {
+        ...directorData,
+        address: { ...directorAddress }
+      }
+    };
+    return formData;
+  };
+
   const handleSubmit = async () => {
     setError('');
     setLoading(true);
-
+  
     try {
-      // Your form submission logic here
-      // Example: navigate('/success');
+      const formData = {
+        name: schoolData.name,
+        email: schoolData.email,
+        postalBox: schoolData.postalBox,
+        adminEmail: schoolData.adminEmail,
+        address: { ...schoolAddress },
+        director: {
+          firstName: directorData.firstName,
+          lastName: directorData.lastName,
+          directorEmail: directorData.directorEmail,
+          address: { ...directorAddress }
+        }
+      };
+  
+      const response = await instance.post("/api/v1/school/register-school", formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      
+      console.log(formData);
+      navigate("/schools");
     } catch (error) {
       setError('Les informations sont incorrectes.');
     }
-
+  
     setLoading(false);
   };
+  
 
   return (
     <div className="login-section school-infos flex items-center justify-center">
-      <form className="">
-        <h2 className="form-title mt-10 mb-10  text-1xl font-bold leading-9 tracking-tight text-center">
-        {step === 1 ?  `Enregistrer une Ecole` : `Enregistrer un Directeur`}   
+      <form className="" onSubmit={handleSubmit}>
+        <h2 className="form-title mt-10 mb-10 text-1xl font-bold leading-9 tracking-tight text-center">
+          {step === 1 ? `Enregistrer une Ecole` : `Enregistrer un Directeur`}   
         </h2>
         <p className="text-left text-1xl text-red-500">{error}</p>
         {step === 1 && (
           <SchoolForm
             schoolData={schoolData}
             schoolAddress={schoolAddress}
+            onSchoolAddressChange={handleSchoolAddress}
             onSchoolChange={handleSchoolChange}
           />
         )}
@@ -108,6 +153,7 @@ export default function RegisterSchoolForm() {
           <DirectorForm
             directorData={directorData}
             directorAddress={directorAddress}
+            onDirAddressChange={handleDirectorAddress}
             onDirectorChange={handleDirectorChange}
           />
         )}
@@ -115,15 +161,16 @@ export default function RegisterSchoolForm() {
           <div className="flex justify-between gap-5">
             {step === 2 && (
               <button
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1.5   px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1.5 px-4 rounded focus:outline-none focus:shadow-outline"
                 onClick={handlePrevStep}
               >
                 Précédent
               </button>
             )}
             <button
-              className="send-button-icon flex justify-center items-center  bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5  px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
               onClick={handleNextStep}
+              className="send-button-icon flex justify-center items-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               <div className="text-center flex justify-center">
                 {isLoading ? (
@@ -140,7 +187,7 @@ export default function RegisterSchoolForm() {
                     />
                   </div>
                 ) : (
-                  <p className="text-center">Suivant</p>
+                  <p className="text-center">{step === 1 ? 'Suivant' : 'Soumettre'}</p> 
                 )}
               </div>
             </button>
