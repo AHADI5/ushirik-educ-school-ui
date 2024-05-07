@@ -1,37 +1,51 @@
+import { useState, useEffect } from "react";
 import instance from "./axios";
 
-const fetchData = async (endpoint) => {
-    try {
-      const response = await instance.get(endpoint);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      throw error;
-    }
-  };
-  
-  export const users = async (schoolID) => {
-    const endpoint = `/api/v1/auth/${schoolID}/users`;
-    return await fetchData(endpoint);
-  };
-  
+const useUserData = (schoolID) => {
+  // Set top user state variable to an empty array
+  const [topUsers, setTopUsers] = useState([]);
 
-  
-  export const recentUsers = async (schoolID) => {
-    const endpoint = `/api/v1/auth/${schoolID}/recent-users`;
-    return await fetchData(endpoint);
-  };
-  
-  export const recentUsersNumber = async (schoolID) => {
-    const endpoint = `/api/v1/auth/${schoolID}/recent-users`;
-    const data = await fetchData(endpoint);
-    return data.length;
-  };
-  
-  export const addedToday = async (schoolID) => {
-    const endpoint = `/api/v1/auth/${schoolID}/user-created-today`;
-    return await fetchData(endpoint);
-  };
+  // Set all users state variable to an empty array
+  const [allUsers, setAllUsers] = useState([]);
 
+  // Set users added today state variable to an empty array
+  const [usersAddedToday, setUsersAddedToday] = useState([]);
 
-  
+  // Set isLoading state for loaders and spinners
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch top five recent users
+        const topUsersResponse = await instance.get(`/api/v1/auth/${schoolID}/recent-users`);
+        setTopUsers(topUsersResponse.data);
+
+        // Fetch all users
+        const allUsersResponse = await instance.get(`/api/v1/auth/${schoolID}/users`);
+        setAllUsers(allUsersResponse.data);
+
+        // Fetch users added today
+        const usersAddedTodayResponse = await instance.get(`/api/v1/auth/${schoolID}/user-created-today`);
+        setUsersAddedToday(usersAddedTodayResponse.data);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // Watch for changes in schoolID.schoolID
+
+  const setUser = async (userID , newData) => {
+    instance.put(`/api/v1/auth/edit-user/${userID}` , newData )
+
+  }
+
+  return { topUsers, allUsers, usersAddedToday, isLoading };
+};
+
+export default useUserData;

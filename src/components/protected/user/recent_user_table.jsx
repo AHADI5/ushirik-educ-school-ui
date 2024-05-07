@@ -40,7 +40,7 @@ export default function Table({ isLoading, users }) {
                       <td className="px-6 py-4">{user.role }</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full ${user.enabled ? 'bg-green-200 text-white' : 'bg-red-500 text-white'}`}>
-                          {user.enabled ? 'ACTIVE' : 'DESACTIVATE'}
+                          {user.enabled ? 'ACTIVE' : 'DISABLE'}
                         </span>
                       </td>
                       <td className="px-6 py-4">{formatDate(user.createdAt)}</td> {/* Add this line */}

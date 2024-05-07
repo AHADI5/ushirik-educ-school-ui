@@ -1,21 +1,28 @@
-import { Route, Routes } from "react-router-dom";
-import { useAuth } from "./components/common/auth/auth";
-import LoginRegisterLayout from "./components/common/common_components/lay_outs/login_layout";
-import LoginForm from "./components/common/common_components/login_register/login_page";
+import {Route, Routes} from 'react-router-dom';
+import {useAuth} from './components/common/auth/auth';
+import LoginRegisterLayout
+  from './components/common/common_components/lay_outs/login_layout';
+import LoginForm
+  from './components/common/common_components/login_register/login_page';
 
-import PrivateRoute from "./components/common/auth/protected_component";
-import MultiSchools from "./components/protected/school/multischool_page";
-import MultiStepsFromRegistration from "./components/protected/school/mutisteps_page";
+import PrivateRoute from './components/common/auth/protected_component';
+import MultiSchools from './components/protected/school/multischool_page';
+import MultiStepsFromRegistration
+  from './components/protected/school/mutisteps_page';
 
-import SignUpPage from "./components/common/common_components/login_register/register_page";
+import SignUpPage
+  from './components/common/common_components/login_register/register_page';
 
-
-import AdminSideBar from "./components/common/common_components/lay_outs/side_bar/admin_side_bar";
-import AdminDasBoard from "./components/protected/dash_board/admin_dashboard";
-import CommonHeader from "./components/common/common_components/lay_outs/Header/header_layout";
-import AllUser from "./components/protected/user/all_user_table";
-function App() {
-  const { authed, userRole } = useAuth();
+import AdminSideBar
+  from './components/common/common_components/lay_outs/side_bar/admin_side_bar';
+import AdminDasBoard from './components/protected/dash_board/admin_dashboard';
+import CommonHeader
+  from './components/common/common_components/lay_outs/Header/header_layout';
+import AllUser from './components/protected/user/all_user_table';
+import UserDetails from './components/protected/user/user_details';
+import SchoolInformation from './components/protected/school/school_details';
+function App () {
+  const {authed, userRole} = useAuth ();
   return (
     <Routes>
       {/* Authentification process */}
@@ -28,13 +35,12 @@ function App() {
             <PrivateRoute
               role={userRole}
               authed={authed}
-              requiredRole={"ADMIN"}
+              requiredRole={'ADMIN'}
             >
               <MultiSchools />
             </PrivateRoute>
           }
         />
-        
 
         <Route
           path="/register-school"
@@ -42,22 +48,22 @@ function App() {
             <PrivateRoute
               role={userRole}
               authed={authed}
-              requiredRole={"ADMIN"}
+              requiredRole={'ADMIN'}
             >
               <MultiStepsFromRegistration />
             </PrivateRoute>
           }
         />
       </Route>
-      <Route element={<CommonHeader/>}>
-        <Route path="/schoolAdmin/:schoolID"  element={<AdminSideBar />}>
+      <Route element={<CommonHeader />}>
+        <Route path="/schoolAdmin/:schoolID" element={<AdminSideBar />}>
           <Route
             path="/schoolAdmin/:schoolID"
             element={
               <PrivateRoute
                 role={userRole}
                 authed={authed}
-                requiredRole={"ADMIN"}
+                requiredRole={'ADMIN'}
               >
                 <AdminDasBoard />
               </PrivateRoute>
@@ -69,11 +75,36 @@ function App() {
               <PrivateRoute
                 role={userRole}
                 authed={authed}
-                requiredRole={"ADMIN"}
+                requiredRole={'ADMIN'}
               >
-                <AllUser/>
+                <AllUser />
               </PrivateRoute>
-          }
+            }
+          />
+          <Route
+            path="/schoolAdmin/:schoolID/users/:userID"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole={'ADMIN'}
+              >
+                <UserDetails />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/schoolAdmin/:schoolID/informations/"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                // requiredRole={'ADMIN'}
+              >
+                <SchoolInformation />
+              </PrivateRoute>
+            }
           />
         </Route>
       </Route>
