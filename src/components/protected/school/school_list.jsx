@@ -32,6 +32,10 @@ export default function Schools () {
     navigate ('/register-school');
   }
 
+  function navigateToSchoolDetails(school , schoolID) {
+    navigate(`/schoolAdmin/${schoolID}`, { state: { school } });
+  }
+
   return (
     <div className="login-section schools flex">
       <div className="schools-list">
@@ -66,11 +70,10 @@ export default function Schools () {
 
                     </div>
                   : schools.map (school => (
-                      <Link to={`/schoolAdmin/${school.schoolID}`}>
-
                         <div
                           className="schools-administrated flex"
                           key={school.schoolID}
+                          onClick={() => navigateToSchoolDetails(school , school.schoolID)}
                         >
                           <div className="school flex">
                             <div className="letter-image flex">
@@ -108,7 +111,7 @@ export default function Schools () {
                           </div>
                           <div className="status">{school.status}</div>
                         </div>
-                      </Link>
+                    
                     ))}
               </div>
 

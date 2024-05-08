@@ -21,6 +21,7 @@ import CommonHeader
 import AllUser from './components/protected/user/all_user_table';
 import UserDetails from './components/protected/user/user_details';
 import SchoolInformation from './components/protected/school/school_details';
+import ClassroomTable from './components/protected/class_room/class_room_table';
 function App () {
   const {authed, userRole} = useAuth ();
   return (
@@ -106,6 +107,20 @@ function App () {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/schoolAdmin/:schoolID/classrooms/"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                // requiredRole={'ADMIN'}
+              >
+                <ClassroomTable/>
+              </PrivateRoute>
+            }
+          />
+
+          
         </Route>
       </Route>
     </Routes>

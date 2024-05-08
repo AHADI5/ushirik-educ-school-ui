@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { formatDate } from './dates-management';
 import { useNavigate, useParams } from 'react-router-dom'; // Import useHistory
 import CustomModal from '../../protected/user/edit_user_popup';
+import CustomModalAdd from '../../protected/user/add_user_popup'; // Import the custom add modal component
 import { useEffect } from 'react';
+import HeaderTable from './header_table';
+import { Edit } from '@mui/icons-material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
+
 const TableWithPagination = ({ columns, rows }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(5);
   const usenavigate = useNavigate(); // Initialize useHistory
   const params = useParams()
+  
 
   // State for search term
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,15 +35,16 @@ const TableWithPagination = ({ columns, rows }) => {
   }
 
   // Function to handle row click and navigate to personal page
-  const handleRowClick = (userID , row) => {
-   // Navigate to personal page with userId
-    usenavigate(`/schoolAdmin/${params['schoolID']}/users/${userID}` , { state: { row } })
-   
+  const handleRowClick = (userID, row) => {
+    // Navigate to personal page with userId
+    usenavigate(`/schoolAdmin/${params['schoolID']}/users/${userID}`, { state: { row } })
+
   };
 
-  //editting logic  
+  // Editing logic  
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false); // State to control the visibility of the add modal
 
   // Function to handle edit button click
   const handleEditClick = (user) => {
@@ -49,24 +57,22 @@ const TableWithPagination = ({ columns, rows }) => {
     setShowModal(false);
   };
 
-  // Search function
-  useEffect(() => {
-    const results = rows.filter(row =>
-      row.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
-  }, [searchTerm]);
+  // Function to handle add user
+  const handleAddUser = () => {
+    setShowAddModal(true); // Show the add modal when the add button is clicked
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchResults(rows.filter(row => row.firstName.toLowerCase().includes(searchTerm.toLowerCase())));
+  };
+  
+
 
   return (
     <div className="container mx-auto">
-     
-      <input
-        type="text"
-        placeholder="Search"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-      
+
+      <HeaderTable onSearch={handleSearch} onAddUser={handleAddUser} />
       <table className="min-w-full table-auto">
         <thead className="bg-gray-200 text-gray-500 text-sm">
           <tr>
@@ -80,14 +86,12 @@ const TableWithPagination = ({ columns, rows }) => {
         <tbody className="text-sm">
           {currentRows.length > 0
             ? currentRows.map((row, index) => (
-              <tr key={index} className="border-b" onClick={() => handleRowClick(row.userID , row)}> {/* Add onClick handler to row */}
+              <tr key={index} className="border-b" onClick={() => handleRowClick(row.userID, row)}> {/* Add onClick handler to row */}
                 {columns.map(column => (
                   <td key={column.accessor} className="px-4 py-2">
                     {column.accessor === 'action'
                       ? <div className="flex gap-2 underline text-blue-500">
-                        <button onClick={() => handleEditClick(row)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                          Edit
-                        </button>
+                        <FontAwesomeIcon icon={faUserEdit} onClick={() => handleEditClick(row)} className=" font-bold py-2 px-4 rounded" />
                       </div>
                       : column.accessor === 'enabled'
                         ? row[column.accessor] ? <span>ACTIVE</span> : <span>DISABLED</span>
@@ -123,8 +127,13 @@ const TableWithPagination = ({ columns, rows }) => {
             </ul>
           </nav>
         </div>}
-        {showModal && (
+     
+      {showModal && (
         <CustomModal user={currentUser} onClose={handleCloseModal} />
+      )}
+      {showAddModal && ( // Render the add modal if showAddModal is true
+        
+        <CustomModalAdd onClose={() => setShowAddModal(false)} schoolID={params['schoolID']} />
       )}
     </div>
   );

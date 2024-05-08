@@ -109,6 +109,7 @@ export default function RegisterSchoolForm() {
         email: schoolData.email,
         postalBox: schoolData.postalBox,
         adminEmail: schoolData.adminEmail,
+        schoolType: schoolData.type,
         address: { ...schoolAddress },
         director: {
           firstName: directorData.firstName,

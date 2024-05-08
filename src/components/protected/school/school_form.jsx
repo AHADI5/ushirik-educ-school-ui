@@ -3,8 +3,8 @@ import React from 'react';
 export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange , onSchoolAddressChange }) {
   return (
     <>
-        <div className="school items-center">
-           <div className='flex gap-3 justify-center items-center'>
+        <div className="school items-center ">
+           <div className='flex gap-3 justify-center items-center '>
                 <div className="info">
                     <div className="pb-2">
                         <label htmlFor="name">
@@ -30,7 +30,7 @@ export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange ,
                     <select 
                          name="type"
                          id="name"
-                         className="w-full px-4 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
+                         className=" px-2 w-52 mb-5 py-1.5 rounded-lg border focus:outline-none focus:border-blue-500"
                          required
                          onChange={onSchoolChange}
                          value={schoolData.type}
@@ -38,6 +38,7 @@ export default function SchoolForm({ schoolData, schoolAddress, onSchoolChange ,
                         <option value="">Type</option>
                         <option value="PRIMARY">PRIMAIRE</option>
                         <option value="SECONDARY">SECONDAIRE</option>
+                        <option value="PRESCOLAIRE">MATERNELLE</option>
                     </select>
                 </div>
            </div>
