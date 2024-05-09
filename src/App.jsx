@@ -22,6 +22,7 @@ import AllUser from './components/protected/user/all_user_table';
 import UserDetails from './components/protected/user/user_details';
 import SchoolInformation from './components/protected/school/school_details';
 import ClassroomTable from './components/protected/class_room/class_room_table';
+import ClassRooms from './components/protected/class_room/class_room_data';
 function App () {
   const {authed, userRole} = useAuth ();
   return (
@@ -115,7 +116,7 @@ function App () {
                 authed={authed}
                 // requiredRole={'ADMIN'}
               >
-                <ClassroomTable/>
+                <ClassRooms/>
               </PrivateRoute>
             }
           />

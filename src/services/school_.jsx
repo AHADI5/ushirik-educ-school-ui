@@ -2,31 +2,41 @@ import { useState, useEffect } from "react";
 import instance from "./axios";
 
 const useSchoolData = (schoolID) => {
-  // Set top user state variable to an empty array
-  const [School, setSchool] = useState([]);
+  // Set state variables
+  const [school, setSchool] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
-    //   setIsLoading(true);
+      setIsLoading(true);
       try {
-        // Fetch top five recent users
-        const SchoolResponse = await instance.get(`/api/v1/school/${schoolID}`);
-        setSchool(SchoolResponse.data);
-        // setIsLoading(false);
+        // Fetch school details
+        const schoolResponse = await instance.get(`/api/v1/school/${schoolID}`);
+        const schoolData = schoolResponse.data;
+
+        // Fetch other related data
+        // For example:
+        // const teachersResponse = await instance.get(`/api/v1/school/${schoolID}/teachers`);
+        // const studentsResponse = await instance.get(`/api/v1/school/${schoolID}/students`);
+
+        // Update state with fetched data
+        setSchool(schoolData);
+
+        // Handle other fetched data as needed
+
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-        // setIsLoading(false);
+        setError(error);
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Watch for changes in schoolID.schoolID
+  }, [schoolID]); // Watch for changes in schoolID to trigger a new fetch
 
-//   const setUser = async (userID , newData) => {
-//     instance.put(`/api/v1/auth/edit-user/${userID}` , newData )
-
-//   }
-
-  return { School};
+  return { school, isLoading, error };
 };
 
 export default useSchoolData;

@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import ProfileDropdown from '../../other/user_role';
+// import { useLocation } from 'react-router-dom';
 
 const TopBar = () => {
   // State for search input value
   const [searchValue, setSearchValue] = useState ('');
+  // const location = useLocation();
+  // console.log("from header",location)
 
   // Handle search input change
   const handleSearchChange = e => {

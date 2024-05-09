@@ -4,14 +4,11 @@ import { useParams } from "react-router-dom";
 
 const useClassroomData = (schoolID) => {
     const param = useParams()
-  // Set top Classroom state variable to an empty array
-  const [topClassrooms, setTopClassrooms] = useState([]);
+
   // Set all Classrooms state variable to an empty array
   const [allClassrooms, setAllClassrooms] = useState([]);
   // Set Classrooms added today state variable to an empty array
-  const [ClassroomsAddedToday, setClassroomsAddedToday] = useState([]);
-  // Set isLoading state for loaders and spinners
-  const [isLoading, setIsLoading] = useState(false);
+
 
   const fetchData = async () => {
     setIsLoading(true);
