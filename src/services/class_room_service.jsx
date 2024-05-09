@@ -1,76 +1,49 @@
-import { useState, useEffect } from "react";
-import instance from "./axios";
-import { useParams } from "react-router-dom";
+import instance from './axios';
+const BASE_URL = 'api/v1/classroom/';
 
-const useClassroomData = (schoolID) => {
-    const param = useParams()
-
-  // Set all Classrooms state variable to an empty array
-  const [allClassrooms, setAllClassrooms] = useState([]);
-  // Set Classrooms added today state variable to an empty array
-
-
-  const fetchData = async () => {
-    setIsLoading(true);
+const ClassroomService = {
+  // Fetch all classrooms
+  getClassroomSection: async (schoolID) => {
     try {
-    //
-
-      // Fetch top five recent Classrooms
-      const topClassroomsResponse = await instance.get(`/api/v1/auth/${schoolID}/recent-Classrooms`);
-      setTopClassrooms(topClassroomsResponse.data);
-
-      // Fetch all Classrooms
-      const allClassroomsResponse = await instance.get(`/api/v1/auth/${schoolID}/Classrooms`);
-      setAllClassrooms(allClassroomsResponse.data);
-
-      // Fetch Classrooms added today
-      const ClassroomsAddedTodayResponse = await instance.get(`/api/v1/auth/${schoolID}/Classroom-created-today`);
-      setClassroomsAddedToday(ClassroomsAddedTodayResponse.data);
-
-      setIsLoading(false);
+      const response = await instance.get(`${BASE_URL}/${schoolID}/get-section`);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setIsLoading(false);
+      console.error('Error fetching classrooms:', error);
+      throw new Error('Failed to fetch classrooms');
     }
-  };
+  },
 
-  useEffect(() => {
-    fetchData();
-  }, [schoolID]); // Watch for changes in schoolID
-
-  const createClassroom = async (newClassroomData) => {
+  // Create a new classroom
+  createClassroomOption: async (schoolID, classroomData) => {
     try {
-      // Send a POST request to create a new Classroom
-      const response = await instance.post(`/api/v1/teacher/new-teacher`, newClassroomData);
-      if (response.status === 200) {
-        console.log('Classroom created successfully');
-        // Refresh data after creating Classroom
-        fetchData();
-      } else {
-        console.error('Failed to create Classroom');
-      }
+      const response = await instance.post(`${BASE_URL}/${schoolID}/new-classRoomOption`, classroomData);
+      return response.data;
     } catch (error) {
-      console.error('Error creating Classroom:', error);
+      console.error('Error creating classroom:', error);
+      throw new Error('Failed to create classroom');
     }
-  };
+  },
 
-  const modifyClassroom = async (ClassroomID, newData) => {
-    try {
-      // Send a PUT request to modify an existing Classroom
-      const response = await instance.put(`/api/v1/auth/edit-Classroom/${ClassroomID}`, newData);
-      if (response.status === 200) {
-        console.log('Classroom modified successfully');
-        // Refresh data after modifying Classroom
-        // fetchData();
-      } else {
-        console.error('Failed to modify Classroom');
-      }
-    } catch (error) {
-      console.error('Error modifying Classroom:', error);
-    }
-  };
+  // Update an existing classroom
+  // updateClassroom: async (schoolID, classroomId, updatedClassroomData) => {
+  //   try {
+  //     const response = await instance.put(`${BASE_URL}/${schoolID}/${classroomId}`, updatedClassroomData);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error updating classroom:', error);
+  //     throw new Error('Failed to update classroom');
+  //   }
+  // },
 
-  return { topClassrooms, allClassrooms, ClassroomsAddedToday, isLoading, createClassroom, modifyClassroom };
+  // Delete a classroom
+  // deleteClassroom: async (schoolID, classroomId) => {
+  //   try {
+  //     await instance.delete(`${BASE_URL}/${schoolID}/${classroomId}`);
+  //   } catch (error) {
+  //     console.error('Error deleting classroom:', error);
+  //     throw new Error('Failed to delete classroom');
+  //   }
+  // },
 };
 
-export default useClassroomData;
+export default ClassroomService;

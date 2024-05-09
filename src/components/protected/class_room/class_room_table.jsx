@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useSchoolData from '../../../services/school_';
 import { useParams } from 'react-router-dom';
+import CustomModalAddClassRoom from './add_classroom_modal';
 
 const ClassroomTable = ({ classrooms }) => {
   const params = useParams();
@@ -140,19 +141,20 @@ const ClassroomTable = ({ classrooms }) => {
           </nav>
         </div>}
       {showModal && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
-          <div className="relative bg-white rounded-lg p-8 max-w-lg w-full">
-            <h3 className="text-lg font-semibold mb-4">Add New Classroom</h3>
-            {/* Add form fields for adding a new classroom */}
-            <div className="flex justify-end">
-              <button onClick={closeModal} className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md ml-4 hover:bg-gray-400 focus:outline-none">
-                Cancel
-              </button>
-              {/* Add submit button for adding a new classroom */}
-            </div>
-          </div>
-        </div>
+        <CustomModalAddClassRoom onClose={closeModal} schoolID={params['schoolID']}/>
+        // <div className="fixed inset-0 z-10 flex items-center justify-center">
+        //   <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
+        //   <div className="relative bg-white rounded-lg p-8 max-w-lg w-full">
+        //     <h3 className="text-lg font-semibold mb-4">Add New Classroom</h3>
+        //     {/* Add form fields for adding a new classroom */}
+        //     <div className="flex justify-end">
+        //       <button onClick={closeModal} className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md ml-4 hover:bg-gray-400 focus:outline-none">
+        //         Cancel
+        //       </button>
+        //       {/* Add submit button for adding a new classroom */}
+        //     </div>
+        //   </div>
+        // </div>
       )}
     </div>
   );
