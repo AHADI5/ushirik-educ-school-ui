@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import useSchoolData from '../../../services/school_';
 import { useParams } from 'react-router-dom';
 import CustomModalAddClassRoom from './add_classroom_modal';
+import RegisterClassRoomModal from './add_classroom_modal';
+import ClassroomService from '../../../services/class_room_service';
 
-const ClassroomTable = ({ classrooms }) => {
+const ClassroomTable = () => {
   const params = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(5);
@@ -11,7 +13,11 @@ const ClassroomTable = ({ classrooms }) => {
   const [filterTerm, setFilterTerm] = useState('');
   const [filteredClassrooms, setFilteredClassrooms] = useState([]);
   const { school, isLoading, error } = useSchoolData(params['schoolID']);
-  const [showModal, setShowModal] = useState(false);
+  const [isModalOpen , setIsModalOpen] = useState(false);
+  const [classRooms , setClassrooms] = useState([]);
+  
+  // This state is for managing form fields data
+  const [fields, setFields] = useState([{ selectValue: "", numberValue: "", optionsValue: "" }]); 
 
   // Get current rows
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -27,10 +33,25 @@ const ClassroomTable = ({ classrooms }) => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      try {
+        const response = await ClassroomService.getClassrooms(params['schoolID']);
+        console.log("ClassRooms " , response)
+        setClassrooms(response);
+        setFilteredClassrooms(response); // Initialize filteredClassrooms with fetched data
+      } catch (error) {
+        console.error('Error fetching classrooms:', error);
+      }
+    };
+
+    fetchClassrooms();
+  }, [params['schoolID']]);
+
   // Search and filter function
   useEffect(() => {
-    if (classrooms) {
-      let results = classrooms;
+    if (classRooms) {
+      let results = classRooms;
       if (searchTerm) {
         results = results.filter(row =>
           row.classID.toLowerCase().includes(searchTerm.toLowerCase())
@@ -41,15 +62,76 @@ const ClassroomTable = ({ classrooms }) => {
       }
       setFilteredClassrooms(results);
     }
-  }, [searchTerm, filterTerm, classrooms]);
+  }, [searchTerm, filterTerm, classRooms]);
 
-  const handleAddClassroom = () => {
-    setShowModal(true);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const addField = () => {
+    setFields([...fields, { selectValue: "", numberValue: "", optionsValue: "" }]);
   };
+
+  const handleSelectChange = (index, value) => {
+    const updatedFields = [...fields];
+    updatedFields[index].selectValue = value;
+    setFields(updatedFields);
+  };
+  const handleOptionChange = (index, value) => {
+    const updatedFields = [...fields];
+    updatedFields[index].optionsValue = value;
+    setFields(updatedFields);
+  };
+  
+
+
+  const handleNumberChange = (index, value) => {
+    const updatedFields = [...fields];
+    updatedFields[index].numberValue = value;
+    setFields(updatedFields);
+  };
+
+  const handleOptionsChange = (index, value) => {
+    const updatedFields = [...fields];
+    updatedFields[index].optionsValue = value;
+    setFields(updatedFields);
+  };
+
+  const handleSubmit = () => {
+    // Handle form submission here
+
+    // Gather data, transform classRoom to list
+    console.log("Form submitted", fields);
+    // Close the modal after form submission
+    setIsModalOpen(false);
+  };
+
+  function transformInLetter(number) {
+    var letter;
+    switch (number) {
+        case 1:
+            letter = 'PREMIERE';
+            break;
+        case 2:
+            letter = 'DEUXIEME';
+            break;
+        case 3:
+            letter = 'TROISIEME';
+            break;
+        case 4:
+            letter = 'QUATRIEME';
+            break;
+        case 5:
+            letter = 'CINQUIEME';
+            break;
+        case 6:
+            letter = 'CINQUIEME';
+            break;
+        default:
+            break;
+    }
+    return letter;
+  }
 
   return (
     <div className="">
@@ -73,8 +155,8 @@ const ClassroomTable = ({ classrooms }) => {
               <option value="2">DEUXIEME</option>
               <option value="3">TROISIEME</option>
               <option value="4">QUATRIEME</option>
-              <option value="4">CINQUEME</option>
-              <option value="4">SIXIEME</option>
+              <option value="5">CINQUIEME</option>
+              <option value="6">SIXIEME</option>
               {/* Add other primary school options as necessary */}
             </>
           )}
@@ -92,37 +174,43 @@ const ClassroomTable = ({ classrooms }) => {
           {/* Add other school types and their respective options as needed */}
         </select>
         <button
-          onClick={handleAddClassroom}
+          onClick={toggleModal}
           className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none"
         >
-          Add Classroom
+          Nouvelless classes
         </button>
       </div>
       <table className="min-w-full table-auto">
         <thead className="bg-gray-200 text-gray-500 text-sm">
           <tr>
             <th className="px-4 py-2 text-left">Class ID</th>
-            <th className="px-4 py-2 text-left">Courses Number</th>
-            <th className="px-4 py-2 text-left">Children Number</th>
+            <th className="px-4 py-2 text-left">Niveau</th>
+            <th className="px-4 py-2 text-left">Lettre</th>
+            <th className="px-4 py-2 text-left">Option</th>
+            <th className="px-4 py-2 text-left">Nombres des cours</th>
+            <th className="px-4 py-2 text-left">Nombre des eleves</th>
           </tr>
         </thead>
         <tbody className="text-sm">
           {currentRows.length > 0
             ? currentRows.map((row, index) => (
               <tr key={index} className="border-b">
-                <td className="px-4 py-2">{row.classID}</td>
-                <td className="px-4 py-2">{row.coursesNumber}</td>
-                <td className="px-4 py-2">{row.childrenNumber}</td>
+                <td className="px-4 py-2">{row.classRoomID}</td>
+                <td className="px-4 py-2"> {transformInLetter(row.level)}</td>
+                <td className="px-4 py-2">{row.letter}</td>
+                <td className="px-4 py-2">{row.studentNumber}</td>
+                <td className="px-4 py-2">{row.courseNumber}</td>
+                <td className="px-4 py-2">{row.optionName}</td>
               </tr>
             ))
             : <tr>
               <td colSpan="3" className="text-center py-4">
-                No data available
+                Aucune classe Enregistrée
               </td>
             </tr>}
         </tbody>
       </table>
-      {classrooms && classrooms.length > 0 &&
+      {classRooms && classRooms.length > 0 &&
         <div className="flex justify-center mt-4">
           <nav>
             <ul className="flex list-style-none">
@@ -140,21 +228,18 @@ const ClassroomTable = ({ classrooms }) => {
             </ul>
           </nav>
         </div>}
-      {showModal && (
-        <CustomModalAddClassRoom onClose={closeModal} schoolID={params['schoolID']}/>
-        // <div className="fixed inset-0 z-10 flex items-center justify-center">
-        //   <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
-        //   <div className="relative bg-white rounded-lg p-8 max-w-lg w-full">
-        //     <h3 className="text-lg font-semibold mb-4">Add New Classroom</h3>
-        //     {/* Add form fields for adding a new classroom */}
-        //     <div className="flex justify-end">
-        //       <button onClick={closeModal} className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md ml-4 hover:bg-gray-400 focus:outline-none">
-        //         Cancel
-        //       </button>
-        //       {/* Add submit button for adding a new classroom */}
-        //     </div>
-        //   </div>
-        // </div>
+      {isModalOpen && (
+        <RegisterClassRoomModal
+          isOpen={isModalOpen}
+          onClose={toggleModal}
+          fields={fields}
+          onAddField={addField}
+          onSelectChange={handleSelectChange}
+          onNumberChange={handleNumberChange}
+         
+          onSubmit={handleSubmit}
+          onOptionChange={handleOptionChange}
+        />
       )}
     </div>
   );

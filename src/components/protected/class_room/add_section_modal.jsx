@@ -8,7 +8,7 @@ const CustomModalAddOption = ({ onClose }) => {
 
     const [newOption, setNewOption] = useState({
         name: '',
-        description: '',
+        Description: '',
         schoolID: schoolID,
     });
 
@@ -31,7 +31,7 @@ const CustomModalAddOption = ({ onClose }) => {
 
     return (
         <div className="p-4 fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white border shadow-sm rounded-xl w-auto">
+            <div className="w-95 bg-white border shadow-sm rounded-xl w-auto">
                 <div className="flex justify-between items-center  mb-3 py-1.5 px-4 border-b">
                     <h3 className="font-bold text-gray-800">
                         Ajouter une Option
@@ -74,8 +74,8 @@ const CustomModalAddOption = ({ onClose }) => {
                             </div>
                             <div className="form-group">
                                 <textarea
-                                    name="description"
-                                    value={newOption.description}
+                                    name="Description"
+                                    value={newOption.Description}
                                     onChange={handleInputChange}
                                     placeholder="Description de l'Option"
                                     className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"

@@ -1,156 +1,143 @@
-import React, { useState } from 'react';
-import useUserData from '../../../services/users_service';
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useParams } from 'react-router-dom';
+import ClassroomService from '../../../services/class_room_service';
 
-const CustomModalAddClassRoom = ({ onClose , schoolID }) => {
-    const params = useParams()
-    const { createUser } = useUserData(schoolID);
-    
-    const [newUser, setNewUser] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        schoolID: `${params['schoolID']}`,
-        phone : '',
-        address: {
-          quarter: '',
-          avenue: '',
-        },
+export default function RegisterClassRoomModal({
+  isOpen,
+  onClose,
+  fields,
+  onAddField,
+  onSelectChange,
+  onNumberChange,
+  onSubmit,
+  onOptionChange
+}) {
+  const param = useParams();
+  const [loading, setLoading] = useState(false);
+  const [classOptions, setClassOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchClassOptions = async () => {
+      try {
+        setLoading(true);
+        // Fetch class options from the external service
+        const response = await ClassroomService.getClassroomSection(param['schoolID']);
+        setClassOptions(response);
+        console.log(response)
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching class options:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchClassOptions();
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      // Transform fields data into the desired format
+      const formData = fields.flatMap((field, index) => {
+        // Generate an array of objects for each selected level, its corresponding letters, and options
+        const level = field.selectValue;
+        const numberOfRooms = parseInt(field.numberValue, 10);
+        const letters = Array.from({ length: numberOfRooms }, (_, roomIndex) =>
+          String.fromCharCode(65 + roomIndex)
+        );
+        return letters.map(letter => ({
+          level,
+          letter,
+          ClassRoomOptionID: field.optionsValue // Assuming optionsValue is added to fields
+        }));
       });
-    
-      const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'quarter' || name === 'avenue') {
-          setNewUser({
-            ...newUser,
-            address: {
-              ...newUser.address,
-              [name]: value,
-            },
-          });
-        } else {
-          setNewUser({
-            ...newUser,
-            [name]: value,
-          });
-        }
-      };
-    
-      const handleSubmit = async (e) => {
-        console.log(newUser)
-        e.preventDefault();
-        try {
-          // Call the createUser function from the useUserData hook to add a new user
-          await createUser(newUser);
-          // Handle success, such as displaying a success message
-          console.log('User added successfully');
-          onClose();
-        } catch (error) {
-          // Handle error response
-          console.error('Failed to add user:', error);
-        }
-      };
 
+      // Log the transformed data
+      console.log('Form data:', formData);
+
+      // Send formData to the server
+      // await instance.post(`/api/v1/classroom/${param['schoolID']}/registerClassRoom`, formData); // Adjust the endpoint as needed
+      const response = await ClassroomService.createClassroom(param['schoolID'] , formData);
+      console.log(response)
+      // Close the modal after successful submission
+      setLoading(false);
+      onClose();
+    } catch (error) {
+      console.error('Error submitting form data:', error);
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="p-4 fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white border shadow-sm rounded-xl w-auto">
-        <div className="flex justify-between items-center  mb-3 py-1.5 px-4 border-b">
-          <h3 className="font-bold text-gray-800">
-            Ajouter une Salle de Classe
-          </h3>
+    isOpen &&
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className=" bg-white rounded-md shadow-md w-full max-w-lg p-6">
+        <h2 className="text-lg font-bold mb-4 text-center">
+          Ajouter des classes
+        </h2>
+        <div className="fields overflow-y-auto max-h-60">
+          {fields.map((field, index) => (
+            <div key={index} className="mb-4 flex items-center">
+              <select
+                className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                value={field.selectValue}
+                onChange={e => onSelectChange(index, e.target.value)}
+              >
+                <option value="">Niveau</option>
+                <option value="1">PREMIERE</option>
+                <option value="2">DEUXIEME</option>
+                <option value="3">TROISIEME</option>
+                <option value="4">QUATRIEME</option>
+                <option value="5">CINQUIEME</option>
+                <option value="6">SIXIEME</option>
+              </select>
+              <input
+                type="number"
+                className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500 ml-2"
+                placeholder="Nombre des salles"
+                value={field.numberValue}
+                onChange={e => onNumberChange(index, e.target.value)}
+              />
+              <select
+                className="border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                value={field.optionsValue} // Assuming optionsValue is added to fields
+                onChange={e => onOptionChange(index, e.target.value)}
+              >
+                <option value="">Options</option>
+                {classOptions.map((option, index) => (
+                  <option key={index} value={option.classRoomOptionID}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center space-x-4 mt-4">
           <button
-            type="button"
-            className="flex justify-center items-center size-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 hover:bg-gray-100"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 focus:outline-none"
+            onClick={onAddField}
+          >
+            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+            Add Field
+          </button>
+          <button
+            className={`bg-green-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-600 focus:outline-none ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-red-600 focus:outline-none"
             onClick={onClose}
           >
-            <span className="sr-only">Close</span>
-            <svg
-              className="flex-shrink-0 size-4"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
+            Cancel
           </button>
-        </div>
-        <div className="p-4 overflow-y-auto">
-          <form onSubmit={handleSubmit}>
-            <div className="max-w-md space-y-3">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  name="firstName"
-                  value={newUser.firstName}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="First Name"
-                />
-                <input
-                  type="text"
-                  name="lastName"
-                  value={newUser.lastName}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Last Name"
-                />
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  name="email"
-                  value={newUser.email}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Email"
-                />
-                <input
-                  type="tel"
-                  name="phone"
-                  value={newUser.phone}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Phone"
-                />
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  name="quarter"
-                  value={newUser.quarter}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Quarter"
-                />
-                <input
-                  type="text"
-                  name="avenue"
-                  value={newUser.avenue}
-                  onChange={handleInputChange}
-                  className=" mb-3 py-1.5 px-4 block w-full border border-gray-500 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="Avenue"
-                />
-              </div>
-              
-              <input
-                type="submit"
-                value="Submit"
-                className="py-2 px-3 inline-flex items-center gap-x-2 font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700"
-              />
-            </div>
-          </form>
         </div>
       </div>
     </div>
   );
-};
-
-export default CustomModalAddClassRoom;
+}

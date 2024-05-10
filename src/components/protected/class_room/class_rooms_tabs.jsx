@@ -4,7 +4,7 @@ import 'react-tabs/style/react-tabs.css';
 
 const TabsComponent = ({ tabs }) => {
   return (
-    <Tabs>
+    <Tabs >
       <TabList>
         {tabs.map((tab, index) => (
           <Tab key={index}>{tab.title}</Tab>

@@ -19,13 +19,13 @@ export default function ClassRooms () {
 
     const tabs = [
         {title:"Salle de classe" , content: isLoading ? 'Loading...' : <ClassroomTable classrooms={classrooms} />},
-        {title:"Option Organisées" , content : <SectionTab school={school} />}
+        {title:"Option Organisées" , content : <SectionTab  />}
         
     ]
     
     return (
       <div className="ml-44 mt-20">
-        <TabsComponent tabs={tabs}/>
+        <TabsComponent  tabs={tabs}/>
       </div>
     );
     
