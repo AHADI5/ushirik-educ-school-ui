@@ -23,6 +23,10 @@ import UserDetails from './components/protected/user/user_details';
 import SchoolInformation from './components/protected/school/school_details';
 import ClassroomTable from './components/protected/class_room/class_room_table';
 import ClassRooms from './components/protected/class_room/class_room_data';
+import DirectorSideBar from './components/common/common_components/lay_outs/side_bar/dir_side_bar';
+import DirectorDashBoard from './components/protected/dash_board/direction/directorDashBoard';
+import CommunicationList from './components/protected/communique/communique_list';
+import SchoolCommunications from './components/protected/communique/communications_data';
 function App () {
   const {authed, userRole} = useAuth ();
   return (
@@ -119,9 +123,36 @@ function App () {
                 <ClassRooms/>
               </PrivateRoute>
             }
-          />
-
-          
+          />       
+        </Route>
+        <Route
+            path="/schoolDirection/:schoolID/"
+            element={<DirectorSideBar/>}
+        >
+          <Route
+            path="/schoolDirection/:schoolID/"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole={'DIRECTOR'}
+              >
+                <DirectorDashBoard/>
+              </PrivateRoute>
+            }
+          /> 
+             <Route
+            path="/schoolDirection/:schoolID/communique-all"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole={'DIRECTOR'}
+              >
+                <SchoolCommunications/>
+              </PrivateRoute>
+            }
+          /> 
         </Route>
       </Route>
     </Routes>

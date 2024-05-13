@@ -30,13 +30,14 @@ export default function SignUpForm () {
 
   // Create Account
   const createAccount = async e => {
+    console.log(formData)
     e.preventDefault ();
     setIsLoading (true);
 
     //sending information to the backend
 
     try {
-      const response = await instance.post (REGISTER_ENDPOINT, formData);
+      const response = await instance.post(REGISTER_ENDPOINT, formData);
       console.log (response);
       const token = response.data['token'];
       //Saving the token on the local storage

@@ -4,11 +4,12 @@ import { TailSpin } from 'react-loader-spinner';
 import SchoolForm from './school_form';
 import DirectorForm from './director_form';
 import instance from '../../../services/axios'; // Make sure to import axios instance from the correct location
-import { jwtDecode } from 'jwt-decode'; // Check import statement, it should be 'jwtDecode' instead of 'jwt-decode'
-import token from '../../common/utilities/getToken';
+import { useAuth } from '../../common/auth/auth';
 
 export default function RegisterSchoolForm() {
-  const adminEmail  = jwtDecode(token)['sub'];
+  
+  const {userEmail}  = useAuth()
+  console.log("admin email is :",userEmail)
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,7 +19,7 @@ export default function RegisterSchoolForm() {
     name: '',
     email: '',
     postalBox: '',
-    adminEmail: adminEmail,
+    adminEmail: userEmail,
     type: ''  
   });
 

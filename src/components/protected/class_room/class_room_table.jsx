@@ -34,7 +34,10 @@ const ClassroomTable = () => {
   }
 
   useEffect(() => {
-    const fetchClassrooms = async () => {
+
+    fetchClassrooms();
+  }, [params['schoolID']]);
+  const fetchClassrooms = async () => {
       try {
         const response = await ClassroomService.getClassrooms(params['schoolID']);
         console.log("ClassRooms " , response)
@@ -45,8 +48,7 @@ const ClassroomTable = () => {
       }
     };
 
-    fetchClassrooms();
-  }, [params['schoolID']]);
+
 
   // Search and filter function
   useEffect(() => {
@@ -65,7 +67,11 @@ const ClassroomTable = () => {
   }, [searchTerm, filterTerm, classRooms]);
 
   const toggleModal = () => {
+    
     setIsModalOpen(!isModalOpen);
+
+    //Update data on UI 
+    fetchClassrooms();
   };
 
   const addField = () => {
@@ -198,9 +204,9 @@ const ClassroomTable = () => {
                 <td className="px-4 py-2">{row.classRoomID}</td>
                 <td className="px-4 py-2"> {transformInLetter(row.level)}</td>
                 <td className="px-4 py-2">{row.letter}</td>
-                <td className="px-4 py-2">{row.studentNumber}</td>
-                <td className="px-4 py-2">{row.courseNumber}</td>
                 <td className="px-4 py-2">{row.optionName}</td>
+                <td className="px-4 py-2">{row.courseNumber}</td>
+                <td className="px-4 py-2">{row.studentNumber}</td>
               </tr>
             ))
             : <tr>

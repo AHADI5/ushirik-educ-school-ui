@@ -4,7 +4,7 @@ import logo from "../../../../../assets/img/ushirik-logo.svg"
 export default function AuthHeader(showLoginButton) {
   const navigate = useNavigate();  
   function redirectToLogin() {
-        navigate("/login")
+        navigate("/")
     }
     return (
         <>
