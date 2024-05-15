@@ -16,7 +16,7 @@ const CommuniqueService = {
    // Fetch all Communiques 
    getCommuniques: async (schoolID) => {
     try {
-      const response = await instance.get(`${BASE_URL}/${schoolID}/Communiques`);
+      const response = await instance.get(`${BASE_URL}/${schoolID}/communications`);
       return response.data;
     } catch (error) {
       console.error('Error fetching Communiques:', error);
@@ -39,7 +39,7 @@ const CommuniqueService = {
   //Create new Communique 
   publishCommunique: async (schoolID, CommuniqueData) => {
     try {
-      const response = await instance.post(`${BASE_URL}/${schoolID}/registerCommunique`, CommuniqueData);
+      const response = await instance.post(`${BASE_URL}/${schoolID}/newCommunique`, CommuniqueData);
       return response.data;
     } catch (error) {
       console.error('Error creating Communique:', error);

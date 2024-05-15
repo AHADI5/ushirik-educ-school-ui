@@ -1,7 +1,20 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { EditNoteOutlined } from '@mui/icons-material';
 import CreateCommuniqueModal from './add_communique_modal';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+
+const columns = [
+  { id: 'name', label: 'Objet', minWidth: 170 },
+  { id: 'contenu', label: 'Contenu', minWidth: 300 },
+  { id: 'date', label: 'Date', minWidth: 20 },
+];
 
 const CommunicationsList = ({ communications }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,6 +26,7 @@ const CommunicationsList = ({ communications }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between mb-4">
@@ -26,36 +40,37 @@ const CommunicationsList = ({ communications }) => {
         </button>
       </div>
       <div className="bg-white communique  rounded my-6">
-        <table className="min-w-full table-auto">
-          <thead >
-            <tr>
-              <th className="px-6 py-3   text-left   tracking-wider text-sm font-light">Objet</th>
-              <th className="px-6 py-3   text-left   tracking-wider text-sm font-light">Chaine</th>
-              <th className="px-6 py-3   text-left   tracking-wider text-sm font-light">Destinataires</th>
-              <th className="px-6 py-3  text-left   tracking-wider text-sm font-light">Status</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {communications.map((communication, index) => (
-              <tr key={index}>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  {communication.name}
-                </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  {communication.channel}
-                </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  {communication.recipients}
-                </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${communication.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {communication.active ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableContainer component={Paper}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align="left"
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {communications.map((communication, index) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  <TableCell>{communication.title}</TableCell>
+                  <TableCell>{communication.content}</TableCell>
+                  <TableCell>{communication.publishedDate}</TableCell>
+                  <TableCell>
+                    {/* <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${communication.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {communication.active ? 'Active' : 'Inactive'}
+                    </span> */}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
       <CreateCommuniqueModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>

@@ -8,6 +8,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import ClassroomService from "../../../services/class_room_service";
+import CommuniqueService from "../../../services/communique_service";
 import { useParams } from "react-router-dom";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -92,10 +93,40 @@ const CreateCommuniqueModal = ({ isOpen, onClose }) => {
     setTo([]); // Reset the selected recipients when recipient type changes
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    // Your existing send logic
+    
+    // Validate input fields
+    if (!subject.trim() || !message.trim()) {
+      setError("Veuillez remplir tous les champs.");
+      return;
+    }
+  
+    // Prepare data to send
+    let recipientIDs = [];
+    if (recipientType === "ALL") {
+      // If recipient type is ALL, recipient IDs will be empty
+      recipientIDs = [];
+    } else if (recipientType === "LEVELS" || recipientType === "INDIVIDUAL" || recipientType === "SECTIONS") {
+      // If recipient type is LEVELS, INDIVIDUAL, or SECTIONS, set recipientIDs to the selected recipients
+      recipientIDs = to;
+    }
+  
+    const data = {
+      title: subject,
+      content: message,
+      recipientType: recipientType,
+      recipientIDs: recipientIDs,
+    };
+  
+    // Here you can send the data to your API endpoint or perform any other action
+    console.log("Data to send:", data);
+    await CommuniqueService.publishCommunique(param['schoolID'],data)
+  
+    // Close modal on successful send
+    onClose();
   };
+  
 
   return (
     <div className={`fixed z-10 inset-0 ${isOpen ? "block" : "hidden"}`}>
@@ -188,8 +219,8 @@ const CreateCommuniqueModal = ({ isOpen, onClose }) => {
                       MenuProps={MenuProps}
                     >
                       {individuals.length === 0 ? "No Student yet" : individuals.map((individual) => (
-                        <MenuItem key={individual} value={individual}>
-                          {individual}
+                        <MenuItem key={individual.studentID} value={individual.parentEmail}>
+                          {individual.parentEmail}
                         </MenuItem>
                       ))}
                     </Select>
