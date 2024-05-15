@@ -185,3 +185,15 @@ tr {
   width: 200px;
   border-radius:50px;
 }
+
+.title-com  {
+  background-color: #eaf1fb;
+}
+
+.send-com-button {
+  background-color: var(--base-color);
+  color: white;
+  outline: none;
+  border-radius: 50px;
+  width:20%;
+}

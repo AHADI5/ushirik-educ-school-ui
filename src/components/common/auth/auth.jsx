@@ -82,10 +82,11 @@ const AuthContext = createContext(null);
 
 // export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
+  const [loading, setLoading] = useState(true); // Add loading state
   const [authed, setAuthed] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
-
+  
   useEffect(() => {
     const token = sessionStorage.getItem('token');
     if (token) {
@@ -97,7 +98,11 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error('Error decoding token:', error);
         logout(); // Clear session storage if token decoding fails
+      } finally {
+        setLoading(false); // Update loading state
       }
+    } else {
+      setLoading(false); // Update loading state if token is not found
     }
   }, []);
 
@@ -131,9 +136,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  console.log('Authed:', authed);
+  console.log('User role:', userRole);
+  console.log('User email:', userEmail);
+
   return (
     <AuthContext.Provider value={{ authed, userRole, userEmail, login, logout }}>
-      {children}
+      {loading ? <div>Loading...</div> : children} {/* Render loading indicator if still loading */}
     </AuthContext.Provider>
   );
 };

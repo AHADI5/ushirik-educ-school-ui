@@ -13,6 +13,30 @@ const ClassroomService = {
     }
   },
 
+  //Fetch all disponible levels 
+
+  getDisponibleLevels: async (schoolID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${schoolID}/classroomLevels`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching classrooms levels:', error);
+      throw new Error('Failed to fetch classrooms levels');
+    }
+  },
+
+
+  //Fetch all ParentEmails 
+  getStudents: async (schoolID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${schoolID}/getAllStudents`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching classrooms levels:', error);
+      throw new Error('Failed to fetch classrooms levels');
+    }
+  },
+
    // Fetch all classrooms 
    getClassrooms: async (schoolID) => {
     try {
