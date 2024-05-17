@@ -199,8 +199,9 @@ tr {
 }
 
 .link {
-  background-color: rgba(173, 216, 230, 0.5);
-  color: white;
+  /* background-color: rgba(173, 216, 230, 0.5); */
+  background-color: white;
+  color: gray;
   padding: 5px;
  
 }
@@ -211,7 +212,7 @@ tr {
   padding: 0.1rem 0.2rem;
   border-radius: 0.3rem;
   transition: background-color 0.3s, color 0.3s;
-  gap: 7px;
+  gap: 4px;
 }
 
 .tab-label {
