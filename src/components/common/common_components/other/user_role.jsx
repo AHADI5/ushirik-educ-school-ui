@@ -9,8 +9,7 @@ function ProfileDropdown() {
     const dropdownRef = useRef(null);
     const { logout} = useAuth();
 
-    //Decoding the token 
-
+    // Decoding the token 
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,6 +26,7 @@ function ProfileDropdown() {
     function toggleInformation() {
         setIsShown(prevState => !prevState);
     }
+
     const token = sessionStorage.getItem("token");
     var decodedToken = "" 
 
@@ -41,20 +41,18 @@ function ProfileDropdown() {
 
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        
-      
-      logout()
-      
-      navigate("/");
+    const handleLogout = () => {   
+        logout()      
+        navigate("/");
     };
 
     return (
-        <div className=" relative inline-block text-left " ref={dropdownRef}>
+        <div className="z-50 relative inline-block text-left" ref={dropdownRef}>
             {/* Profile picture */}
             <div
-                className=" mr-2 w-9 h-9 relative flex justify-center items-center rounded-full bg-gray-500 text-xl text-white cursor-pointer"
+                className="mr-2 w-9 h-9 relative flex justify-center items-center rounded-full bg-gray-500 text-xl text-white cursor-pointer"
                 onClick={toggleInformation}
+                style={{ zIndex: 50 }} // Set z-index to ensure the dropdown appears on top
             >
                 <Avatar name={decodedToken["sub"]} round={true} size='30'/>
                 {/* Green status indicator */}
@@ -62,7 +60,7 @@ function ProfileDropdown() {
             </div>
             {/* Dropdown menu */}
             {isShown && (
-                <div className="informations absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
+                <div className="informations absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg" style={{ zIndex: 50 }}>
                     <div className="py-3 px-5">
                         <p className="text-sm text-gray-500">Signed in as</p>
                         <p className="text-sm font-medium text-gray-800">{decodedToken["sub"]}</p>

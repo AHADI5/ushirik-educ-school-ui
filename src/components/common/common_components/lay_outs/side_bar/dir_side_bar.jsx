@@ -15,11 +15,12 @@ export default function DirectorSideBar() {
     const params  = useParams() 
     const menuComponents = [
         { menu: "Accueil", link: `/schoolDirection/${params['schoolID']}`, icon: faHomeAlt },
-        { menu: "Classes", link: "/users", icon: faUserAlt },
+        { menu: "Classes", link: `/schoolDirection/${params['schoolID']}/classrooms/`, icon: faUserAlt },
         { menu: "Communiqués", link: `/schoolDirection/${params['schoolID']}/communique-all`, icon: faNewspaper },
         { menu: "Elèves", link: `/schoolDirection/${params['schoolID']}/students`, icon: faUserGroup }, 
         { menu: "Evénéments", link: `/schoolDirection/${params['schoolID']}/events`, icon: faCalendarWeek },
         { menu: "Cours", link: "/schools", icon: faChalkboardTeacher }, 
+       
     ];
     return (
         <>

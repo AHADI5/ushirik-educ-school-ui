@@ -197,3 +197,27 @@ tr {
   border-radius: 50px;
   width:20%;
 }
+
+.link {
+  background-color: rgba(173, 216, 230, 0.5);
+  color: white;
+  padding: 5px;
+ 
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.3rem;
+  transition: background-color 0.3s, color 0.3s;
+  gap: 7px;
+}
+
+.tab-label {
+  margin-left: 0.5rem;
+}
+
+.icon {
+  font-size: 0.5rem; 
+}

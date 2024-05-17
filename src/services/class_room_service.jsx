@@ -2,7 +2,7 @@ import instance from './axios';
 const BASE_URL = 'api/v1/classroom/';
 
 const ClassroomService = {
-  // Fetch all classrooms 
+  // Fetch all classrooms section
   getClassroomSection: async (schoolID) => {
     try {
       const response = await instance.get(`${BASE_URL}/${schoolID}/get-section`);

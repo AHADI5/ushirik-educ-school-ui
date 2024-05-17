@@ -10,6 +10,7 @@ import Chip from "@mui/material/Chip";
 import ClassroomService from "../../../services/class_room_service";
 import CommuniqueService from "../../../services/communique_service";
 import { useParams } from "react-router-dom";
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -21,10 +22,7 @@ const MenuProps = {
   },
 };
 
-
-
-
-const CreateCommuniqueModal = ({ isOpen, onClose }) => {
+const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
   const [recipientType, setRecipientType] = useState("");
   const [to, setTo] = useState([]);
   const [subject, setSubject] = useState("");
@@ -40,46 +38,28 @@ const CreateCommuniqueModal = ({ isOpen, onClose }) => {
     // Fetch your data here if needed
     const fetchLevels = async () => {
       try {
-        // setLoading(true);
-        // Fetch class options from the external service
         const response = await ClassroomService.getDisponibleLevels(param['schoolID']);
-      
         setLevel(response);
-        console.log("ALL LEVELS :",response)
-        // setLoading(false);
       } catch (error) {
         console.error('Error fetching class levels:', error);
-        // setLoading(false);
       }
     };
 
     const fetchSection = async () => {
       try {
-        // setLoading(true);
-        // Fetch class options from the external service
         const response = await ClassroomService.getClassroomSection(param['schoolID']);
-      
         setSection(response);
-        console.log("ALL SECTIONS :",response)
-        // setLoading(false);
       } catch (error) {
         console.error('Error fetching class levels:', error);
-        // setLoading(false);
       }
     };
 
     const fetchStudents = async () => {
       try {
-        // setLoading(true);
-        // Fetch class options from the external service
         const response = await ClassroomService.getStudents(param['schoolID']);
-      
         setIndividuals(response);
-        console.log("ALL STUDENTS :",response)
-        // setLoading(false);
       } catch (error) {
         console.error('Error fetching class levels:', error);
-        // setLoading(false);
       }
     };
 
@@ -87,6 +67,17 @@ const CreateCommuniqueModal = ({ isOpen, onClose }) => {
     fetchSection()
     fetchStudents()
   }, []);
+
+  useEffect(() => {
+    if (refreshList) {
+      // Reset form fields and errors when refreshList is true
+      setRecipientType("");
+      setTo([]);
+      setSubject("");
+      setMessage("");
+      setError(null);
+    }
+  }, [refreshList]);
 
   const handleChange = (event) => {
     setRecipientType(event.target.value);

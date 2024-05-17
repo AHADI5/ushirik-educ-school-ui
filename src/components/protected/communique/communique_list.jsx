@@ -1,31 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EditNoteOutlined } from '@mui/icons-material';
 import CreateCommuniqueModal from './add_communique_modal';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import { DataGrid } from '@mui/x-data-grid';
+import DateService from '../../../services/date_service';
+import { useNavigate, useParams } from 'react-router-dom';
+
+
 
 const columns = [
-  { id: 'name', label: 'Objet', minWidth: 170 },
-  { id: 'contenu', label: 'Contenu', minWidth: 300 },
-  { id: 'date', label: 'Date', minWidth: 20 },
+  { field: 'title', headerName: 'Objet', width: 170 },
+  { field: 'content', headerName: 'Contenu', width: 300 },
+  { field: 'publishedDate', headerName: 'Date', width: 120 },
+  { field: 'reach', headerName: 'PORTEE', width:  120},
 ];
 
-const CommunicationsList = ({ communications }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const CommunicationsList = ({ communications, fetchUpdatedData }) => {
 
-  const handleOpenModal = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCommunique, setSelectedCommunique] = useState(null);
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const handleOpenModal = (communique) => {
+    setSelectedCommunique(communique);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCommunique = (row) => {
+    const selectedCommunique = rows.find((communique) => communique.id === row.id);
+    navigate(`/schoolDirection/${params['schoolID']}/communique-all/${selectedCommunique.id}`, { state: { communiqueData: selectedCommunique } });
   };
+  
+  
+
+  const handleCloseModal = () => {
+    setSelectedCommunique(null);
+    setIsModalOpen(false);
+    fetchUpdatedData(); // Trigger list refresh
+  };
+
+  // Add unique id to each communication
+  const rows = communications.map((communication) => ({
+    id: communication.communiqueID,
+    title: communication.title,
+    content: communication.content,
+    publishedDate: DateService.formatDate(communication.publishedDate),
+    recipients  : communication.recipients,
+    reach: communication.recipientType,
+  }));
 
   return (
     <div className="container mx-auto p-4">
@@ -39,40 +61,18 @@ const CommunicationsList = ({ communications }) => {
           <EditNoteOutlined className="flex justify-center items-center"/> <p className="flex justify-center"><span>nouveau</span></p>
         </button>
       </div>
-      <div className="bg-white communique  rounded my-6">
-        <TableContainer component={Paper}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align="left"
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {communications.map((communication, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                  <TableCell>{communication.title}</TableCell>
-                  <TableCell>{communication.content}</TableCell>
-                  <TableCell>{communication.publishedDate}</TableCell>
-                  <TableCell>
-                    {/* <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${communication.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {communication.active ? 'Active' : 'Inactive'}
-                    </span> */}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <div className="bg-white communique relative rounded my-6" style={{ zIndex: 1 }}>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            checkboxSelection
+            onRowClick={(row) => handleCommunique(row)}
+          />
+        </div>
       </div>
-      <CreateCommuniqueModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <CreateCommuniqueModal isOpen={isModalOpen} onClose={handleCloseModal} selectedCommunique={selectedCommunique} />
     </div>
   );
 };

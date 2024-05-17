@@ -27,6 +27,15 @@ import DirectorSideBar from './components/common/common_components/lay_outs/side
 import DirectorDashBoard from './components/protected/dash_board/direction/directorDashBoard';
 import CommunicationList from './components/protected/communique/communique_list';
 import SchoolCommunications from './components/protected/communique/communications_data';
+import CommuniqueDetails from './components/protected/communique/communique_details';
+import ClassRoomsLayout from './components/protected/class_room_management/class_room_layout';
+import Overview from './components/protected/class_room_management/overview';
+import ClassroomStudentList from './components/protected/class_room_management/students';
+import ClassRoomsCourses from './components/protected/class_room_management/courses';
+import ClassRoomsTimeTable from './components/protected/class_room_management/time_table';
+import ClassRoomsStudentMax from './components/protected/class_room_management/student_max';
+import ClassRoomsDiscipline from './components/protected/class_room_management/discipline';
+import ClassRoomEvents from './components/protected/class_room_management/events';
 function App () {
   const {authed, userRole} = useAuth ();
   return (
@@ -141,7 +150,7 @@ function App () {
               </PrivateRoute>
             }
           /> 
-             <Route
+          <Route
             path="/schoolDirection/:schoolID/communique-all"
             element={
               <PrivateRoute
@@ -153,6 +162,109 @@ function App () {
               </PrivateRoute>
             }
           /> 
+
+          <Route
+            path="/schoolDirection/:schoolID/communique-all/:communique"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole={'DIRECTOR'}
+              >
+                <CommuniqueDetails/>
+              </PrivateRoute>
+            }
+          /> 
+          <Route
+            path="/schoolDirection/:schoolID/classrooms/"
+            element={<ClassRoomsLayout/>}
+          > 
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/overview"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <Overview/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/students"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassroomStudentList/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/events"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassRoomEvents/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/courses"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassRoomsCourses/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/time-table"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassRoomsTimeTable/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/student-max"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassRoomsStudentMax/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/schoolDirection/:schoolID/classrooms/discipline"
+              element = {
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole={'DIRECTOR'}
+                >
+                  <ClassRoomsDiscipline/>
+                </PrivateRoute>
+              }
+            />
+            
+          </Route>
         </Route>
       </Route>
     </Routes>
