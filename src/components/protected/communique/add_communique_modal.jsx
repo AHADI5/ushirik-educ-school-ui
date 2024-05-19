@@ -7,9 +7,12 @@ import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import ClassroomService from "../../../services/class_room_service";
 import CommuniqueService from "../../../services/communique_service";
 import { useParams } from "react-router-dom";
+import { TailSpin } from "react-loader-spinner";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -28,11 +31,15 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
-  const [levels , setLevel] = useState([])
-  const [sections , setSection] = useState([])
-  const [individuals ,setIndividuals] = useState([])
+  const [levels, setLevel] = useState([]);
+  const [sections, setSection] = useState([]);
+  const [individuals, setIndividuals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const param = useParams()
+  const param = useParams();
 
   useEffect(() => {
     // Fetch your data here if needed
@@ -50,7 +57,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
         const response = await ClassroomService.getClassroomSection(param['schoolID']);
         setSection(response);
       } catch (error) {
-        console.error('Error fetching class levels:', error);
+        console.error('Error fetching class sections:', error);
       }
     };
 
@@ -59,14 +66,14 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
         const response = await ClassroomService.getStudents(param['schoolID']);
         setIndividuals(response);
       } catch (error) {
-        console.error('Error fetching class levels:', error);
+        console.error('Error fetching students:', error);
       }
     };
 
-    fetchLevels()
-    fetchSection()
-    fetchStudents()
-  }, []);
+    fetchLevels();
+    fetchSection();
+    fetchStudents();
+  }, [param]);
 
   useEffect(() => {
     if (refreshList) {
@@ -86,13 +93,13 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    
+
     // Validate input fields
     if (!subject.trim() || !message.trim()) {
       setError("Veuillez remplir tous les champs.");
       return;
     }
-  
+
     // Prepare data to send
     let recipientIDs = [];
     if (recipientType === "ALL") {
@@ -102,22 +109,35 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
       // If recipient type is LEVELS, INDIVIDUAL, or SECTIONS, set recipientIDs to the selected recipients
       recipientIDs = to;
     }
-  
+
     const data = {
       title: subject,
       content: message,
       recipientType: recipientType,
       recipientIDs: recipientIDs,
     };
-  
+
     // Here you can send the data to your API endpoint or perform any other action
     console.log("Data to send:", data);
-    await CommuniqueService.publishCommunique(param['schoolID'],data)
-  
-    // Close modal on successful send
-    onClose();
+    setLoading(true);
+    try {
+      await CommuniqueService.publishCommunique(param['schoolID'], data);
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Communiqué envoyé avec succès.");
+      onClose(); // Close modal on successful send
+    } catch (error) {
+      console.error('Error sending communique:', error);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Erreur lors de l'envoi du communiqué.");
+    } finally {
+      setLoading(false);
+      setSnackbarOpen(true);
+    }
   };
-  
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <div className={`fixed z-10 inset-0 ${isOpen ? "block" : "hidden"}`}>
@@ -133,7 +153,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
             <div className="title-com p-1 flex justify-between">
               <span className="p-2">Ecrire un nouveau communiqué</span>
               <button type="button" className="p-2" onClick={onClose}>
-                <strong class="text-xl align-center cursor-pointer alert-del">
+                <strong className="text-xl align-center cursor-pointer alert-del">
                   &times;
                 </strong>
               </button>
@@ -158,7 +178,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                 </FormControl>
               </div>
               {recipientType === "LEVELS" && (
-                <Box sx={{ width: "100%"} } >
+                <Box sx={{ width: "100%" }}>
                   <FormControl fullWidth>
                     <InputLabel id="levels-label">Niveaux</InputLabel>
                     <Select
@@ -166,7 +186,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                       id="levels"
                       multiple
                       value={to}
-                      label = {"Destinataire"}
+                      label={"Destinataire"}
                       onChange={(e) => setTo(e.target.value)}
                       size="small"
                       renderValue={(selected) => (
@@ -187,7 +207,6 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                   </FormControl>
                 </Box>
               )}
-              <div className="mt-2"></div>
               {recipientType === "INDIVIDUAL" && (
                 <Box sx={{ width: "100%" }}>
                   <FormControl fullWidth>
@@ -195,7 +214,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                     <Select
                       labelId="individuals-label"
                       id="individuals"
-                      label = {"Individuel"}
+                      label={"Individuel"}
                       multiple
                       value={to}
                       onChange={(e) => setTo(e.target.value)}
@@ -209,11 +228,13 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                       )}
                       MenuProps={MenuProps}
                     >
-                      {individuals.length === 0 ? "No Student yet" : individuals.map((individual) => (
-                        <MenuItem key={individual.studentID} value={individual.parentEmail}>
-                          {individual.parentEmail}
-                        </MenuItem>
-                      ))}
+                      {individuals.length === 0
+                        ? "No Student yet"
+                        : individuals.map((individual) => (
+                            <MenuItem key={individual.studentID} value={individual.parentEmail}>
+                              {individual.parentEmail}
+                            </MenuItem>
+                          ))}
                     </Select>
                   </FormControl>
                 </Box>
@@ -226,7 +247,7 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                       labelId="sections-label"
                       id="sections"
                       multiple
-                      label  = {"Section"}
+                      label={"Section"}
                       value={to}
                       onChange={(e) => setTo(e.target.value)}
                       size="small"
@@ -241,7 +262,6 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
                     >
                       {sections.map((section) => (
                         <MenuItem key={section.classRoomOptionID} value={section.name}>
-                          {/* {console.log(section.classRoomOptionID , section.name)} */}
                           {section.name}
                         </MenuItem>
                       ))}
@@ -286,13 +306,37 @@ const CreateCommuniqueModal = ({ isOpen, onClose, refreshList }) => {
               {error && <p className="text-red-500">{error}</p>}
             </div>
             <div className="bg-gray-50 px-4 p-2">
-              <Button variant="contained" endIcon={<SendIcon />} type="submit">
-                Envoyer
+              <Button variant="contained" endIcon={<SendIcon />} type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <TailSpin
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color="rgb(255,255 ,255)"
+                      ariaLabel="tail-spin-loading"
+                      radius="0.5"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  </div>
+                ) : (
+                  "Envoyer"
+                )}
               </Button>
             </div>
           </form>
         </div>
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

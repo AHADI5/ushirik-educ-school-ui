@@ -203,8 +203,21 @@ tr {
   background-color: white;
   color: gray;
   padding: 5px;
+  
  
 }
+
+/* .selectedClassRoom {
+  color: red;
+  background-color: greenyellow;
+} */
+
+.selectedClassRoom > div {
+  font-weight: 500;
+  border-left: 4px solid var(--base-color) ;
+ 
+}
+
 
 .tab {
   display: flex;
@@ -221,4 +234,8 @@ tr {
 
 .icon {
   font-size: 0.5rem; 
+}
+
+.classroom-info {
+  font-size: x-small;
 }
