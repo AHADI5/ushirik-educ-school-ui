@@ -19,7 +19,7 @@ export default function AdminDashContent (schoolID) {
   return (
     <div className="flex flex-col w-full">
       {/* First row with four blocks */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-1">
         <StatBlock
           numberAdded={30}
           numberGone={0}

@@ -10,10 +10,12 @@ import {
   StepLabel,
   CircularProgress,
 } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const steps = ['Details', 'Parent', 'Address'];
 
 const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
+  const params = useParams() ;
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,13 +23,13 @@ const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
     lastName: '',
     firstName: '',
     gender: '',
-    classID: '',
+    classID: params.classID,
     parent: {
       firstName: '',
       lastName: '',
       email: '',
       phone: '',
-      schoolID: 1,
+      schoolID: params.schoolID,
     },
     address: {
       quarter: '',
@@ -53,7 +55,12 @@ const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
   }, [fetchClassrooms]);
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === steps.length - 1) {
+      // If last step, submit the form
+      handleSubmit();
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -91,7 +98,7 @@ const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setLoading(true);
     try {
       await onSubmit(formData);
@@ -155,7 +162,7 @@ const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
             >
               {classrooms.map((classroom) => (
                 <MenuItem key={classroom.classRoomID} value={classroom.classRoomID}>
-                  {classroom.level} {classroom.letter} 
+                  {classroom.level} {classroom.letter}
                 </MenuItem>
               ))}
             </TextField>
@@ -238,15 +245,13 @@ const MultiStepForm = ({ onSubmit, fetchClassrooms }) => {
         <Button disabled={activeStep === 0} onClick={handleBack}>
           Back
         </Button>
-        {activeStep === steps.length - 1 ? (
-          <Button type="submit" variant="contained" color="primary">
-            {loading ? <CircularProgress size={24} /> : 'Submit'}
-          </Button>
-        ) : (
-          <Button variant="contained" color="primary" onClick={handleNext}>
-            Next
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleNext}
+        >
+          {activeStep === steps.length - 1 ? (loading ? <CircularProgress size={24} /> : 'Submit') : 'Next'}
+        </Button>
       </Box>
     </Box>
   );
