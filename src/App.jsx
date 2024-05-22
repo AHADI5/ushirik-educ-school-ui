@@ -33,6 +33,9 @@ import TabLayout from "./components/protected/class_room_management/layouts/tabs
 import StudentTab from "./components/protected/class_room_management/students/student_tab";
 import StudentAttendance from "./components/protected/class_room_management/students/student_attendance";
 import StudentDiscipline from "./components/protected/class_room_management/students/student_discipline";
+import TeachersManagment from "./components/protected/teachers/teachers_list";
+import AllCoursesList from "./components/protected/courses/all_course_list";
+import EventManagement from "./components/events/event_management";
 
 function App() {
   const { authed, userRole } = useAuth();
@@ -92,11 +95,37 @@ function App() {
 
         {/* Director routes */}
         <Route path="/schoolDirection/:schoolID" element={<DirectorSideBar />}>
+        
           <Route
             index
             element={
               <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
                 <DirectorDashBoard />
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
+            path="events"
+            element={
+              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                <EventManagement/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="enseignants"
+            element={
+              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                <TeachersManagment/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="courses"
+            element={
+              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                <AllCoursesList/>
               </PrivateRoute>
             }
           />
@@ -116,6 +145,7 @@ function App() {
               </PrivateRoute>
             }
           />
+        
           <Route path="classrooms" element={<ClassRoomsLayout />}>
             <Route path=":classID" element={<TabLayout />}>
               <Route

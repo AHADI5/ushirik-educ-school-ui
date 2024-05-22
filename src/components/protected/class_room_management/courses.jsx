@@ -31,8 +31,8 @@ const fetchTeachers = async (schoolID) => {
   return response;
 };
 
-const fetchCourses = async (schoolID) => {
-  const response = await CourseService.getCourses(schoolID);
+const fetchCourses = async (classID) => {
+  const response = await CourseService.getClassRoomCourses(classID);
   return response;
 };
 
@@ -48,19 +48,17 @@ const ClassRoomsCourses = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    //   const fetchedTeachers = await fetchTeachers(params.schoolID);
-    //   const fetchedCourses = await fetchCourses(params.schoolID);
-    //   setTeachers(fetchedTeachers);
-    //   setCourses(fetchedCourses);
+      const fetchedCourses = await fetchCourses(params.classID);
+      setCourses(fetchedCourses);
     };
     fetchData();
-  }, [params.schoolID]);
+  }, [params.classID]);
 
   const handleSave = async (newCourse) => {
-    console.log("Data to send" , newCourse)
+    console.log("Data to send", newCourse)
     await CourseService.createCourse(newCourse);
-    // const fetchedCourses = await fetchCourses(params.schoolID);
-    // setCourses(fetchedCourses);
+    const fetchedCourses = await fetchCourses(params.classID);
+    setCourses(fetchedCourses);
     setAddingNew(false);
   };
 
@@ -103,9 +101,9 @@ const ClassRoomsCourses = () => {
           </IconButton>
           <FormControl fullWidth margin="normal">
             <InputLabel>Course</InputLabel>
-            <Select value={selectedCourse.id} onChange={handleCourseSelect}>
+            <Select value={selectedCourse.courseID} onChange={handleCourseSelect}>
               {courses.map((course) => (
-                <MenuItem key={course.id} value={course.id}>
+                <MenuItem key={course.courseID} value={course.courseID}>
                   {course.name}
                 </MenuItem>
               ))}
@@ -182,22 +180,20 @@ const ClassRoomsCourses = () => {
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Course Name</TableCell>
-                  <TableCell>Teacher</TableCell>
+                  <TableCell>Nom</TableCell>
+                  <TableCell>Categorie</TableCell>
                   <TableCell>Credits</TableCell>
-                  <TableCell>Assignments</TableCell>
+                  <TableCell>Evaluations</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredCourses.map((course) => (
-                  <TableRow key={course.id} onClick={() => setSelectedCourse(course)} style={{ cursor: 'pointer' }}>
+                  <TableRow key={course.courseID} onClick={() => setSelectedCourse(course)} style={{ cursor: 'pointer' }}>
                     <TableCell>{course.name}</TableCell>
-                    <TableCell>
-                      {teachers.find((teacher) => teacher.id === course.teacher)?.name || 'Unknown'}
-                    </TableCell>
-                    <TableCell>{course.credits}</TableCell>
-                    <TableCell>{course.assignments}</TableCell>
+                    <TableCell>{course.category}</TableCell>
+                    <TableCell>{course.credit}</TableCell>
+                    <TableCell>{course.assigmentNumber}</TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => { e.stopPropagation(); setSelectedCourse(course); }}>
                         <EditIcon />

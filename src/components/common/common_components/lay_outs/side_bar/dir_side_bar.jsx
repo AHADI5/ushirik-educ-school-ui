@@ -19,7 +19,8 @@ export default function DirectorSideBar() {
         { menu: "Communiqués", link: `/schoolDirection/${params['schoolID']}/communique-all`, icon: faNewspaper },
         { menu: "Elèves", link: `/schoolDirection/${params['schoolID']}/students`, icon: faUserGroup }, 
         { menu: "Evénéments", link: `/schoolDirection/${params['schoolID']}/events`, icon: faCalendarWeek },
-        { menu: "Cours", link: "/schools", icon: faChalkboardTeacher }, 
+        { menu: "Cours", link: `/schoolDirection/${params['schoolID']}/courses`, icon: faChalkboardTeacher }, 
+        { menu: "Enseigants", link: `/schoolDirection/${params['schoolID']}/enseignants`, icon: faChalkboardTeacher },
        
     ];
     return (

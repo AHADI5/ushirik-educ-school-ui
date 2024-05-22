@@ -1,11 +1,22 @@
+// CourseService.js
 import instance from './axios';
 const BASE_URL = 'api/v1/courses/';
-
+const BASE_URL2 = 'api/v1/classroom/';
 const CourseService = {
-  // Fetch all Courses 
+  // Fetch all Courses
   getCourses: async (schoolID) => {
     try {
-      const response = await instance.get(`${BASE_URL}/${schoolID}/getCoursesBySchoolID`);
+      const response = await instance.get(`${BASE_URL2}/${schoolID}/getAllCourses`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Courses:', error);
+      throw new Error('Failed to fetch Courses');
+    }
+  },
+
+  getClassRoomCourses: async (classID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${classID}/coursesByClassID`);
       return response.data;
     } catch (error) {
       console.error('Error fetching Courses:', error);
@@ -43,9 +54,39 @@ const CourseService = {
     }
   },
 
+  AddCourseCategory: async (schoolID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${schoolID}/register-new-courseCategory`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching course categories:', error);
+      throw new Error('Failed to fetch course categories');
+    }
+  },
+
   getCourseCategory: async (schoolID) => {
     try {
       const response = await instance.get(`${BASE_URL}/${schoolID}/getAllCoursesCategory`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching course categories:', error);
+      throw new Error('Failed to fetch course categories');
+    }
+  },
+
+  assignCourse: async (data) => {
+    try {
+      const response = await instance.post(`${BASE_URL2}/courses/assign-course` , data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching course categories:', error);
+      throw new Error('Failed to fetch course categories');
+    }
+  },
+
+  getAllCoursesAssigned:async (teacherID) => {
+    try {
+      const response = await instance.get(`${BASE_URL2}/${teacherID}/getAllCoursesAssigned`);
       return response.data;
     } catch (error) {
       console.error('Error fetching course categories:', error);
