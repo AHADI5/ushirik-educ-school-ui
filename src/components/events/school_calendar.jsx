@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { v4 as uuidv4 } from 'uuid';
 import { Dialog, TextField, Button, CircularProgress, Snackbar } from '@mui/material';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from 'react-router-dom';
 import instance from '../../services/axios';
-
+import { v4 as uuidv4 } from 'uuid';
 const localizer = momentLocalizer(moment);
 
 const randomColor = () => {
@@ -25,25 +24,30 @@ const SchoolCalendar = () => {
   const [eventTitle, setEventTitle] = useState('');
   const [eventStart, setEventStart] = useState(new Date());
   const [eventEnd, setEventEnd] = useState(new Date());
+  const [eventPlace, setEventPlace] = useState('');
+  const [eventDescription, setEventDescription] = useState('');
   const [eventId, setEventId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const {schoolID} = useParams()
+  const { schoolID } = useParams();
+
   // Fetch initial events from API
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const response = await instance.get(`api/v1/school/${schoolID}/events`);
-        console.log("data is ",response.data)
-        if (!response.ok) {
-          const text = await response.data.text();
-          
-          throw new Error(`Failed to fetch events: ${text}`);
-        }
-        const data = await response.data.json();
-        setEvents(data);
+        const response = await instance.get(`/api/v1/school/${schoolID}/events`);
+        const fetchedEvents = response.data.map(event => ({
+          id: event.eventID,
+          title: event.title,
+          start: new Date(event.startingDate),
+          end: new Date(event.endingDate),
+          place: event.place,
+          description: event.description,
+          color: event.color,
+        }));
+        setEvents(fetchedEvents);
       } catch (error) {
         setError(error.message);
         setSnackbarOpen(true);
@@ -53,7 +57,7 @@ const SchoolCalendar = () => {
     };
 
     fetchEvents();
-  }, []);
+  }, [schoolID]);
 
   const handleSelectSlot = ({ start, end }) => {
     setOpenDialog(true);
@@ -64,36 +68,37 @@ const SchoolCalendar = () => {
   const handleEventClick = (event) => {
     setOpenDialog(true);
     setEventTitle(event.title);
-    setEventStart(event.start);
-    setEventEnd(event.end);
+    setEventStart(new Date(event.start));
+    setEventEnd(new Date(event.end));
+    setEventPlace(event.place);
+    setEventDescription(event.description);
     setEventId(event.id);
   };
 
   const handleSaveEvent = async () => {
     const newEvent = {
-      id: eventId || uuidv4(),
+      eventID: eventId || uuidv4(),
       title: eventTitle,
-      start: eventStart,
-      end: eventEnd,
+      startingDate: moment(eventStart).format('YYYY-MM-DDTHH:mm:ss'),
+      endingDate: moment(eventEnd).format('YYYY-MM-DDTHH:mm:ss'),
+      createdAt: moment().format('YYYY-MM-DDTHH:mm:ss'),
+      place: eventPlace,
+      description: eventDescription,
       color: randomColor()
     };
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/events${eventId ? `/${eventId}` : ''}`, {
+      const response = await instance({
         method: eventId ? 'PUT' : 'POST',
+        url: `/api/v1/school/${schoolID}/newEvent${eventId ? `/${eventId}` : ''}`,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newEvent)
+        data: newEvent
       });
 
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Failed to save event: ${text}`);
-      }
-
-      const savedEvent = await response.json();
+      const savedEvent = response.data;
 
       if (eventId) {
         setEvents(events.map(event => (event.id === eventId ? savedEvent : event)));
@@ -105,6 +110,8 @@ const SchoolCalendar = () => {
       setEventTitle('');
       setEventStart(new Date());
       setEventEnd(new Date());
+      setEventPlace('');
+      setEventDescription('');
       setEventId(null);
     } catch (error) {
       setError(error.message);
@@ -118,20 +125,14 @@ const SchoolCalendar = () => {
     if (eventId) {
       setLoading(true);
       try {
-        const response = await fetch(`/api/events/${eventId}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`Failed to delete event: ${text}`);
-        }
-
+        await instance.delete(`/api/v1/school/${schoolID}/events/${eventId}`);
         setEvents(events.filter(event => event.id !== eventId));
         setOpenDialog(false);
         setEventTitle('');
         setEventStart(new Date());
         setEventEnd(new Date());
+        setEventPlace('');
+        setEventDescription('');
         setEventId(null);
       } catch (error) {
         setError(error.message);
@@ -147,9 +148,11 @@ const SchoolCalendar = () => {
   };
 
   return (
-    <div className='ml-48 mt-16'>
+    <div className="ml-48 mt-16">
       {loading ? (
-        <CircularProgress />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </div>
       ) : (
         <Calendar
           localizer={localizer}
@@ -174,6 +177,7 @@ const SchoolCalendar = () => {
             value={eventTitle}
             onChange={(e) => setEventTitle(e.target.value)}
             fullWidth
+            style={{ marginBottom: '20px' }}
           />
           <TextField
             label="Start Time"
@@ -181,6 +185,7 @@ const SchoolCalendar = () => {
             value={moment(eventStart).format('YYYY-MM-DDTHH:mm')}
             onChange={(e) => setEventStart(moment(e.target.value).toDate())}
             fullWidth
+            style={{ marginBottom: '20px' }}
           />
           <TextField
             label="End Time"
@@ -188,6 +193,21 @@ const SchoolCalendar = () => {
             value={moment(eventEnd).format('YYYY-MM-DDTHH:mm')}
             onChange={(e) => setEventEnd(moment(e.target.value).toDate())}
             fullWidth
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            label="Place"
+            value={eventPlace}
+            onChange={(e) => setEventPlace(e.target.value)}
+            fullWidth
+            style={{ marginBottom: '20px' }}
+          />
+          <TextField
+            label="Description"
+            value={eventDescription}
+            onChange={(e) => setEventDescription(e.target.value)}
+            fullWidth
+            style={{ marginBottom: '20px' }}
           />
           <div style={{ marginTop: 20 }}>
             <Button onClick={handleSaveEvent} variant="contained" color="primary" disabled={loading}>

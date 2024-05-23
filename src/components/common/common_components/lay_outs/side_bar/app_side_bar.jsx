@@ -14,7 +14,7 @@ export default function AppMenu({menus}) {
                 </div>
             </div>
         </div>
-            <nav class="hs-accordion-group p-6 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
+            <nav className="hs-accordion-group p-6 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
                 
             <div className="navigations space-y-1.5">
                     {menus.map((item, index) => (
