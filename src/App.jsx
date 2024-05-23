@@ -35,7 +35,7 @@ import StudentAttendance from "./components/protected/class_room_management/stud
 import StudentDiscipline from "./components/protected/class_room_management/students/student_discipline";
 import TeachersManagment from "./components/protected/teachers/teachers_list";
 import AllCoursesList from "./components/protected/courses/all_course_list";
-import EventManagement from "./components/events/event_management";
+import SchoolEvents from "./components/events/school_calendar";
 
 function App() {
   const { authed, userRole } = useAuth();
@@ -109,7 +109,7 @@ function App() {
             path="events"
             element={
               <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
-                <EventManagement/>
+                <SchoolEvents/>
               </PrivateRoute>
             }
           />

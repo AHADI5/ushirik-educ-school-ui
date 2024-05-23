@@ -266,3 +266,62 @@ tr {
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+
+/* custom-scheduler-styles.css */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.saving-spinner {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* custom-scheduler-styles.css */
+
+.scheduler-container {
+  margin: 48px 20px;
+}
+
+.scheduler-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.scheduler-header button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.scheduler-header button:hover {
+  background-color: #0056b3;
+}
+
+
+
+
+
+iframe#webpack-dev-server-client-overlay{display:none!important}
+

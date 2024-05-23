@@ -1,0 +1,31 @@
+/* custom-scheduler-styles.css */
+
+/* Example: Change the background color of the scheduler */
+.k-scheduler {
+  background-color: #f0f0f0; /* Light grey background */
+}
+
+/* Example: Change the event colors */
+.k-event {
+  background-color: #007aff; /* iOS blue color for events */
+  border-color: #007aff; /* iOS blue color for events border */
+  color: white; /* White text for contrast */
+}
+
+/* Example: Change the selected date background color */
+.k-nav-current {
+  background-color: #007aff; /* iOS blue color */
+  color: white;
+}
+
+/* Example: Change toolbar button colors */
+.k-button {
+  background-color: #007aff; /* iOS blue for buttons */
+  border-color: #007aff;
+  color: white;
+}
+
+.k-button:hover {
+  background-color: #005bb5; /* Darker blue for hover state */
+  border-color: #005bb5;
+}

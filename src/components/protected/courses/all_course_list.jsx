@@ -31,6 +31,7 @@ export default function AllCoursesList() {
   const [newCategoryDescription, setNewCategoryDescription] = useState("");
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseDescription, setNewCourseDescription] = useState("");
+  const [newCourseTeacher, setNewCourseTeacher] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [openAddCourse, setOpenAddCourse] = useState(false);
@@ -41,8 +42,15 @@ export default function AllCoursesList() {
     async function fetchData() {
       try {
         const courseData = await CourseService.getCourses(schoolID);
-        console.log(courseData)
-        setCourses(courseData);
+        console.log(courseData);
+        const flattenedCourses = courseData.flatMap((classData) =>
+          classData.courseFormList.map((course) => ({
+            ...course,
+            classRoom: classData.classRoom,
+            classID: classData.classID,
+          }))
+        );
+        setCourses(flattenedCourses);
         const categoryData = await CourseService.getCourseCategory(schoolID);
         setCategories(categoryData);
       } catch (error) {
@@ -61,7 +69,7 @@ export default function AllCoursesList() {
         Description: newCategoryDescription,
         schoolID: parseInt(schoolID),
       };
-      await CourseService.AddCourseCategory(newCategory);
+      await CourseService.AddCourseCategory(schoolID, newCategory);
       const updatedCategories = await CourseService.getCourseCategories(schoolID);
       setCategories(updatedCategories);
       setNewCategoryName("");
@@ -77,14 +85,23 @@ export default function AllCoursesList() {
       const newCourse = {
         name: newCourseName,
         Description: newCourseDescription,
+        teacher: newCourseTeacher,
         category: selectedCategory,
         schoolID: parseInt(schoolID),
       };
       await CourseService.addCourse(newCourse);
       const updatedCourses = await CourseService.getCourses(schoolID);
-      setCourses(updatedCourses);
+      const flattenedCourses = updatedCourses.flatMap((classData) =>
+        classData.courseFormList.map((course) => ({
+          ...course,
+          classRoom: classData.classRoom,
+          classID: classData.classID,
+        }))
+      );
+      setCourses(flattenedCourses);
       setNewCourseName("");
       setNewCourseDescription("");
+      setNewCourseTeacher("");
       setSelectedCategory("");
       setOpenAddCourse(false);
     } catch (error) {
@@ -124,6 +141,8 @@ export default function AllCoursesList() {
                   <TableCell>Nom du cours</TableCell>
                   <TableCell>Catégorie</TableCell>
                   <TableCell>Description</TableCell>
+                  <TableCell>Professeur</TableCell>
+                  <TableCell>Classe</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -133,6 +152,8 @@ export default function AllCoursesList() {
                     <TableCell>{course.name}</TableCell>
                     <TableCell>{course.category}</TableCell>
                     <TableCell>{course.Description}</TableCell>
+                    <TableCell>{course.teacher}</TableCell>
+                    <TableCell>{course.classRoom}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -191,6 +212,14 @@ export default function AllCoursesList() {
             fullWidth
             value={newCourseDescription}
             onChange={(e) => setNewCourseDescription(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Professeur du cours"
+            type="text"
+            fullWidth
+            value={newCourseTeacher}
+            onChange={(e) => setNewCourseTeacher(e.target.value)}
           />
           <FormControl fullWidth margin="normal">
             <InputLabel>Catégorie</InputLabel>

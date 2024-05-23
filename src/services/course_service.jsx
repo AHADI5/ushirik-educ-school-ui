@@ -54,9 +54,9 @@ const CourseService = {
     }
   },
 
-  AddCourseCategory: async (schoolID) => {
+  AddCourseCategory: async (schoolID ,data) => {
     try {
-      const response = await instance.get(`${BASE_URL}/${schoolID}/register-new-courseCategory`);
+      const response = await instance.post(`${BASE_URL}/${schoolID}/register-new-courseCategory` ,data );
       return response.data;
     } catch (error) {
       console.error('Error fetching course categories:', error);
