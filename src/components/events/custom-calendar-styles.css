@@ -1,0 +1,17 @@
+/* custom-calendar.css */
+
+/* Change the color of the navigation buttons */
+.rbc-btn-group button {
+  background-color: #007bff; /* Change to your desired color */
+  color: white;
+}
+
+.rbc-btn-group button:hover {
+  background-color: #0056b3; /* Change to your desired hover color */
+}
+
+/* Change the color of the active view button */
+.rbc-btn-group button.rbc-active {
+  background-color: #28a745; /* Change to your desired active color */
+  color: white;
+}

@@ -97,6 +97,7 @@ export default function GestionEnseignants() {
     setEnseignantSelectionne(selectedTeacher);
     setAfficherDetailsEnseignant(true);
     const teacherCourses = await fetchTeacherCourses(selectedTeacher.id);
+    console.log(teacherCourses)
     setAssignedCourses(teacherCourses);
     setChargementCours(false);
   };
@@ -132,8 +133,8 @@ export default function GestionEnseignants() {
         teacherID: enseignantSelectionne.id,
         courseIDs: coursSelectionnes,
       };
-      await CourseService.assignCourse(dataToSend);
-      console.log(dataToSend)
+      
+      console.log(await CourseService.assignCourse(dataToSend))
       const updatedCourses = await fetchTeacherCourses(enseignantSelectionne.id);
       setAssignedCourses(updatedCourses);
     } catch (error) {

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+// import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Dialog, TextField, Button, CircularProgress, Snackbar } from '@mui/material';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from 'react-router-dom';
 import instance from '../../services/axios';
 import { v4 as uuidv4 } from 'uuid';
+
+// import "./custom-calendar-styles.css"
 const localizer = momentLocalizer(moment);
 
 const randomColor = () => {
@@ -89,6 +91,7 @@ const SchoolCalendar = () => {
 
     setLoading(true);
     try {
+      console.log("id" ,newEvent);
       const response = await instance({
         method: eventId ? 'PUT' : 'POST',
         url: `/api/v1/school/${schoolID}/newEvent${eventId ? `/${eventId}` : ''}`,
@@ -99,6 +102,7 @@ const SchoolCalendar = () => {
       });
 
       const savedEvent = response.data;
+      
 
       if (eventId) {
         setEvents(events.map(event => (event.id === eventId ? savedEvent : event)));
@@ -171,7 +175,7 @@ const SchoolCalendar = () => {
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <div style={{ padding: 20 }}>
-          <h2>{eventId ? 'Edit Event' : 'Add Event'}</h2>
+          <h2 className="mb-4">{eventId ? 'Mettre à jour' : 'Ajouter un Evenément'}</h2>
           <TextField
             label="Event Title"
             value={eventTitle}
