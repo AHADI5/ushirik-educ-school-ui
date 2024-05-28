@@ -37,6 +37,20 @@ const ClassroomService = {
     }
   },
 
+  //get ClassRoom titular  
+  getClassRoomTitular: async (classID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${classID}/getTitular`);
+      console.log("Data assigned" , response.data)
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching classroom titular levels:', error);
+      throw new Error('Failed to fetch classroom titular ');
+    }
+  },
+
+
+
    // Fetch all classrooms 
    getClassrooms: async (schoolID) => {
     try {

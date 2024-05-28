@@ -7,7 +7,7 @@ import { Oval } from 'react-loader-spinner';
 
 export default function AllUser() {
     const { schoolID } = useParams();
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
     const { allUsers, isLoading } = useUserData(schoolID);
     
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,7 +49,8 @@ export default function AllUser() {
 
     // Handle row click to navigate to user detail page
     const handleRowClick = (row) => {
-        navigate(`/schoolAdmin/${schoolID}/users/${row.id}`, { state: { user: row } });
+        // console.log("la lisgne"  , row.firstName )
+        navigate(`/schoolAdmin/${schoolID}/users/${row.userID}`, { state: { user: row } });
     };
 
     if (isLoading) {
@@ -69,7 +70,7 @@ export default function AllUser() {
                 placeholder="Search..."
                 className="mb-4 p-2 border border-gray-300 rounded"
             />
-            <div style={{ height: 500, width: '99%', marginLeft: '44px', marginRight: '3px', marginTop: '20px' }}>
+            <div style={{ height: 500, marginRight: '3px', marginTop: '20px' }}>
                 {rows.length > 0 ? (
                     <DataGrid 
                         rows={rows}
@@ -78,10 +79,10 @@ export default function AllUser() {
                         rowsPerPageOptions={[5, 10, 20]}
                         checkboxSelection={false}
                         disableSelectionOnClick
-                        onRowClick={(row) => handleRowClick(row)} // Pass row directly to handleRowClick
-                        // getRowClassName={(params) => 
-                        //     params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-                        // }
+                        onRowClick={(params) => handleRowClick(params.row)} // Pass row directly to handleRowClick
+                        getRowClassName={(params) => 
+                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+                        }
                     />
                 ) : (
                     <div className='flex justify-center items-center h-full'>

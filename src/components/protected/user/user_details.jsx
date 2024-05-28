@@ -8,20 +8,20 @@ import instance from '../../../services/axios';
 const UserDetails = () => {
   // Access location state
   const location = useLocation();
-  const { row } = location.state;
+  const { user } = location.state;
 
   // State for the edit mode
   const [editMode, setEditMode] = useState(false);
-  const [rowData, setRowData] = useState(row); // State for row data
+  const [userData, setuserData] = useState(user); // State for user data
 
-  const name = `${rowData.firstName} ${rowData.lastName}`;
+  const name = `${userData.firstName} ${userData.lastName}`;
 
   const deactivateUser = async (userName) => {
     try {
       // Send request to deactivate user
       await instance.put(`/api/v1/auth/${userName}/disableUser`);
       // Update user status in state
-      setRowData({ ...rowData, enabled: false }); // Update rowData state
+      setuserData({ ...userData, enabled: false }); // Update userData state
     } catch (error) {
       console.error('Error deactivating user:', error);
     }
@@ -33,10 +33,10 @@ const UserDetails = () => {
       // Send request to activate user
       await instance.put(`/api/v1/auth/${userName}/enableUser`);
       // Update user status in state
-      setRowData((prevRow) => ({
-        ...prevRow,
+      setuserData((prevuser) => ({
+        ...prevuser,
         enabled: true,
-      })); // Update rowData state
+      })); // Update userData state
     } catch (error) {
       console.error('Error activating user:', error);
     }
@@ -48,22 +48,22 @@ const UserDetails = () => {
         <div className="text-2xl font-bold mb-4">
           {name}
         </div>
-        <p className="mb-10 font-bold">{rowData.email}</p>
+        <p className="mb-10 font-bold">{userData.email}</p>
         <div className="flex gap-20 ">
           <div className="flex gap-4">
             <Avatar name={name} size="50" />
             <div>
               <p>Role</p>
-              <span>{rowData.role}</span>
+              <span>{userData.role}</span>
             </div>
           </div>
           <div className="flex gap-10">
             <div>
               <p>Status</p>
-              {rowData.enabled
+              {userData.enabled
                 ? (
                   <button
-                    onClick={() => deactivateUser(rowData.email)}
+                    onClick={() => deactivateUser(userData.email)}
                     className="py-1 px-2 inline-flex items-center gap-x-1 text-xs font-medium bg-teal-100 text-teal-800 rounded-full dark:bg-teal-500/10 dark:text-teal-500"
                   >
                     <FontAwesomeIcon
@@ -75,7 +75,7 @@ const UserDetails = () => {
                 )
                 : (
                   <button
-                    onClick={() => activateUser(rowData.email)}
+                    onClick={() => activateUser(userData.email)}
                     className="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-red-100 text-red-800 rounded-full dark:bg-red-500/10 dark:text-red-500"
                   >
                     <FontAwesomeIcon
@@ -92,11 +92,11 @@ const UserDetails = () => {
         <div className="flex gap-20 mt-4">
           <div>
             <p className="pb-4">Joined</p>
-            <p><FormatDateAndTime datetimestring={rowData.createdAt} /></p>
+            <p><FormatDateAndTime datetimestring={userData.createdAt} /></p>
           </div>
           <div>
             <p className="pb-4">Last Login</p>
-            <p><FormatDateAndTime datetimestring={rowData.createdAt} /></p>
+            <p><FormatDateAndTime datetimestring={userData.createdAt} /></p>
           </div>
         </div>
 
@@ -105,8 +105,8 @@ const UserDetails = () => {
             <p className="pb-4">Validite</p>
             <p>
               {' '}
-              <span className={`inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium ${rowData.accountNonExpired ? 'bg-teal-500 text-white' : 'bg-red-500 text-white'}`}>
-                {rowData.accountNonExpired ? 'Valide' : 'Non valide'}
+              <span className={`inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium ${userData.accountNonExpired ? 'bg-teal-500 text-white' : 'bg-red-500 text-white'}`}>
+                {userData.accountNonExpired ? 'Valide' : 'Non valide'}
               </span>
             </p>
           </div>
@@ -114,14 +114,14 @@ const UserDetails = () => {
             <p className="pb-4">Etat</p>
             <p>
               {' '}
-              <span className={`inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium ${rowData.accountNonExpired ? 'bg-yellow-500 text-white' : 'bg-gray-500 text-white'}`}>
-                {rowData.accountNonExpired ? 'Ouvert' : 'Bloqué'}
+              <span className={`inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium ${userData.accountNonExpired ? 'bg-yellow-500 text-white' : 'bg-gray-500 text-white'}`}>
+                {userData.accountNonExpired ? 'Ouvert' : 'Bloqué'}
               </span>
             </p>
           </div>
         </div>
 
-        {/* <p>Email: {rowData.email}</p> */}
+        {/* <p>Email: {userData.email}</p> */}
         {/* Render other data as needed */}
       </div>
     </div>
