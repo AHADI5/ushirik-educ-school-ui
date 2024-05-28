@@ -22,12 +22,14 @@ import {
   ListItemText,
   CircularProgress,
   ListSubheader,
+  Modal
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TeacherService from "../../../services/teacher_service";
 import CourseService from "../../../services/course_service";
 import { useParams } from "react-router-dom";
+import CustomModalAdd from "../user/add_user_popup";
 
 export default function GestionEnseignants() {
   const [termRecherche, setTermRecherche] = useState("");
@@ -41,21 +43,24 @@ export default function GestionEnseignants() {
   const [chargementCours, setChargementCours] = useState(true);
   const [chargementAssignation, setChargementAssignation] = useState(false);
   const [assignedCourses, setAssignedCourses] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const params = useParams();
   const schoolID = params.schoolID;
 
-  useEffect(() => {
-    async function fetchEnseignants() {
-      try {
-        const data = await TeacherService.getTeachers(schoolID);
-        setLignes(data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des enseignants:", error);
-      } finally {
-        setChargementEnseignants(false);
-      }
+  const fetchEnseignants = async () => {
+    try {
+      const data = await TeacherService.getTeachers(schoolID);
+      console.log(data)
+      setLignes(data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des enseignants:", error);
+    } finally {
+      setChargementEnseignants(false);
     }
+  };
 
+  useEffect(() => {
+    fetchEnseignants();
     async function fetchCours() {
       try {
         const data = await CourseService.getCourses(schoolID);
@@ -77,7 +82,6 @@ export default function GestionEnseignants() {
       }
     }
 
-    fetchEnseignants();
     fetchCours();
   }, [schoolID]);
 
@@ -148,6 +152,13 @@ export default function GestionEnseignants() {
     setCoursSelectionnes(event.target.value);
   };
 
+  const handleModalOpen = () => setOpenModal(true);
+
+  const handleModalClose = async () => {
+    setOpenModal(false);
+    await fetchEnseignants(); // Refetch the data to update the list of teachers
+  };
+
   return (
     <div className="ml-48 mt-16">
       <Paper sx={{ padding: 2 }}>
@@ -159,6 +170,9 @@ export default function GestionEnseignants() {
             Gestion des Enseignants
           </Typography>
         </Box>
+        <Button variant="contained" color="primary" onClick={handleModalOpen} sx={{ mb: 2 }}>
+          Ajouter un enseignant
+        </Button>
         {!afficherDetailsEnseignant ? (
           chargementEnseignants ? (
             <Box display="flex" justifyContent="center" alignItems="center" height="400px">
@@ -244,11 +258,11 @@ export default function GestionEnseignants() {
                   Cours assignés
                 </Typography>
                 {chargementCours ? (
-                  <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                  <Box display="flex" justifyContent="center" alignItems="center" height="100px">
                     <CircularProgress />
                   </Box>
                 ) : (
-                  <TableContainer component={Paper} sx={{ marginTop: 2, maxHeight: 300 }}>
+                  <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 300 }}>
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
@@ -302,6 +316,23 @@ export default function GestionEnseignants() {
           </Box>
         )}
       </Paper>
+
+      {/* Modal for Adding Teacher */}
+      <Modal open={openModal} onClose={handleModalClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          p: 4,
+        }}>
+          <CustomModalAdd onClose={handleModalClose} schoolID={schoolID} />
+        </Box>
+      </Modal>
     </div>
   );
 }
