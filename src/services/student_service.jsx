@@ -14,6 +14,17 @@ const StudentService = {
     }
   },
 
+  getStudentStats: async (schoolID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${schoolID}/get-student-stats`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Students stats:', error);
+      throw new Error('Failed to fetch Studens Stats ');
+    }
+  },
+
+
   //Fetch all disponible levels 
 
   getDisponibleLevels: async (schoolID) => {

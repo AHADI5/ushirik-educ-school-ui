@@ -41,11 +41,11 @@ const ClassroomService = {
   getClassRoomTitular: async (classID) => {
     try {
       const response = await instance.get(`${BASE_URL}/${classID}/getTitular`);
-      console.log("Data assigned" , response.data)
+      console.log("titular", response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching classroom titular levels:', error);
-      throw new Error('Failed to fetch classroom titular ');
+      throw new Error('Failed to fetch classroom titular');
     }
   },
 

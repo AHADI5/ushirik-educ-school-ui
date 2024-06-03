@@ -248,6 +248,7 @@ export default function GestionEnseignants() {
                 </Typography>
                 <Typography variant="body2">
                   Email: {enseignantSelectionne.email}
+                  
                 </Typography>
                
               </Box>
