@@ -14,6 +14,18 @@ const StudentService = {
     }
   },
 
+  getRecentStudent: async (schoolID) => {
+    try {
+      const response = await instance.get(`${BASE_URL}/${schoolID}//recentStudents`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Students:', error);
+      throw new Error('Failed to fetch Students');
+    }
+  },
+
+
+
   getStudentStats: async (schoolID) => {
     try {
       const response = await instance.get(`${BASE_URL}/${schoolID}/get-student-stats`);

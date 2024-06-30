@@ -47,6 +47,7 @@ export default function DirectorContent (schoolID) {
                 <p className='title'>Recent students</p>
                 <Link><p className="text-blue-500 text-sm">voir plus</p></Link>
               </div>
+              
             </div>
           </div>
         </div>
@@ -60,7 +61,7 @@ export default function DirectorContent (schoolID) {
               </div>
               {isCommuniqueEmpty
                 ? <Link
-                    to={`/schoolDirection/${schoolID['schoolID']}/communique-all`}
+                    to={`/schoolDirection/${param['schoolID']}/new-communique`}
                   >
                     <p className="text-blue-500 text-sm">Nouveau</p>
                   </Link>
