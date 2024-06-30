@@ -21,6 +21,7 @@ export default function DirectorSideBar() {
         { menu: "Evénéments", link: `/schoolDirection/${params['schoolID']}/events`, icon: faCalendarWeek },
         { menu: "Cours", link: `/schoolDirection/${params['schoolID']}/courses`, icon: faChalkboardTeacher }, 
         { menu: "Enseigants", link: `/schoolDirection/${params['schoolID']}/enseignants`, icon: faChalkboardTeacher },
+        { menu: "Reglememnts", link: `/schoolDirection/${params['schoolID']}/rules`, icon: faChalkboardTeacher },
        
     ];
     return (

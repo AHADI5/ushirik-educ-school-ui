@@ -36,6 +36,7 @@ import StudentDiscipline from "./components/protected/class_room_management/stud
 import TeachersManagment from "./components/protected/teachers/teachers_list";
 import AllCoursesList from "./components/protected/courses/all_course_list";
 import SchoolEvents from "./components/events/school_calendar";
+import SchoolRules from "./components/protected/school_rules/school_rules";
 
 function App() {
   const { authed, userRole } = useAuth();
@@ -54,15 +55,23 @@ function App() {
           <Route
             index
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="ADMIN">
-                <AdminDasBoard />
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
+                <AdminDasBoard/>
               </PrivateRoute>
             }
           />
           <Route
             path="users"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="ADMIN">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
                 <AllUser />
               </PrivateRoute>
             }
@@ -70,7 +79,11 @@ function App() {
           <Route
             path="users/:userID"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="ADMIN">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
                 <UserDetails />
               </PrivateRoute>
             }
@@ -78,7 +91,11 @@ function App() {
           <Route
             path="informations"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="ADMIN">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
                 <SchoolInformation />
               </PrivateRoute>
             }
@@ -86,7 +103,11 @@ function App() {
           <Route
             path="classrooms"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="ADMIN">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
                 <ClassRooms />
               </PrivateRoute>
             }
@@ -95,44 +116,63 @@ function App() {
 
         {/* Director routes */}
         <Route path="/schoolDirection/:schoolID" element={<DirectorSideBar />}>
-        
           <Route
             index
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
                 <DirectorDashBoard />
               </PrivateRoute>
             }
           />
-          
+
           <Route
             path="events"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
-                <SchoolEvents/>
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
+                <SchoolEvents />
               </PrivateRoute>
             }
           />
           <Route
             path="enseignants"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
-                <TeachersManagment/>
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
+                <TeachersManagment />
               </PrivateRoute>
             }
           />
           <Route
             path="courses"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
-                <AllCoursesList/>
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
+                <AllCoursesList />
               </PrivateRoute>
             }
           />
           <Route
             path="communique-all"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
                 <SchoolCommunications />
               </PrivateRoute>
             }
@@ -140,48 +180,77 @@ function App() {
           <Route
             path="communique-all/:communique"
             element={
-              <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
                 <CommuniqueDetails />
               </PrivateRoute>
             }
           />
-        
+          <Route
+            path="rules"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
+                <SchoolRules />
+              </PrivateRoute>
+            }
+          />
           <Route path="classrooms" element={<ClassRoomsLayout />}>
             <Route path=":classID" element={<TabLayout />}>
               <Route
                 index
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <Overview />
                   </PrivateRoute>
                 }
               />
-              <Route
-                path="students"
-                element={ <ClassroomStudentList />}
-              >
-                <Route path=":studentID" element = {<StudentTab/>}>
-                  <Route path="attendance"  
-                      element = {
-                      <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
-                          <StudentAttendance/>
+              <Route path="students" element={<ClassroomStudentList />}>
+                <Route path=":studentID" element={<StudentTab />}>
+                  <Route
+                    path="attendance"
+                    element={
+                      <PrivateRoute
+                        role={userRole}
+                        authed={authed}
+                        requiredRole="DIRECTOR"
+                      >
+                        <StudentAttendance />
                       </PrivateRoute>
                     }
                   />
-                  <Route path="discipline"  
-                      element = {
-                      <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR" >
-                          <StudentDiscipline/>
+                  <Route
+                    path="discipline"
+                    element={
+                      <PrivateRoute
+                        role={userRole}
+                        authed={authed}
+                        requiredRole="DIRECTOR"
+                      >
+                        <StudentDiscipline />
                       </PrivateRoute>
-                      
-                      }/>
+                    }
+                  />
                 </Route>
-
               </Route>
               <Route
                 path="events"
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <ClassRoomEvents />
                   </PrivateRoute>
                 }
@@ -189,7 +258,11 @@ function App() {
               <Route
                 path="courses"
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <ClassRoomsCourses />
                   </PrivateRoute>
                 }
@@ -197,7 +270,11 @@ function App() {
               <Route
                 path="time-table"
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <ClassRoomsTimeTable />
                   </PrivateRoute>
                 }
@@ -205,7 +282,11 @@ function App() {
               <Route
                 path="student-max"
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <ClassRoomsStudentMax />
                   </PrivateRoute>
                 }
@@ -213,7 +294,11 @@ function App() {
               <Route
                 path="discipline"
                 element={
-                  <PrivateRoute role={userRole} authed={authed} requiredRole="DIRECTOR">
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
                     <ClassRoomsDiscipline />
                   </PrivateRoute>
                 }
