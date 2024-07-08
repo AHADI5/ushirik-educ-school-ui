@@ -67,7 +67,7 @@ export default function AdminDashContent (schoolID) {
         </div>
         <div className="w-1/4 bg-white shadow-md p-4">
           <p>Catégories</p>
-          <UsersChart />
+          <UsersChart schoolID = {schoolID['school']} />
         </div>
       </div>
     </div>

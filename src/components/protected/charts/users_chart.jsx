@@ -1,16 +1,26 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-export default function UsersChart(params) {
+import { useParams } from "react-router-dom";
+import useUserData from "../../../services/users_service";
+export default function UsersChart() {
+  const params = useParams()
+
+ 
+  //make request to get an array of numbers 
+  const {userStat} = useUserData(params['schoolID']);
+
+  console.log("the data set is" , userStat)
+  
     ChartJS.register(ArcElement, Tooltip, Legend);
     const data = {
         labels: [
-          'Parents',
+          'Direteurs',
           'Enseignants',
-          'Directeur'
+          'Parents'
         ],
         datasets: [{
-          label: 'My First Dataset',
-          data: [1, 0, 0],
+          label: 'User Data Set',
+          data: [userStat.directors, userStat.teachers, userStat.parents],
           backgroundColor: [
             'rgb(255, 99, 132)',
             'rgb(54, 162, 235)',

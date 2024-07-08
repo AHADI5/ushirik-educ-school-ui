@@ -6,7 +6,7 @@ export default function LoginRegisterLayout() {
   return (
     <>
       {/* Login header */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 h-screen relative">
+      <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 p-4 h-screen relative">
         {/* Outlet */}
         <div className="flex items-center justify-center p-4">
           <Outlet />

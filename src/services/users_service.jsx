@@ -10,7 +10,11 @@ const useUserData = (schoolID) => {
   const [allUsers, setAllUsers] = useState([]);
   // Set users added today state variable to an empty array
   const [usersAddedToday, setUsersAddedToday] = useState([]);
+
+  //set an empty array for storing numbers (user per role quantity)
+  const [userStat, setUserStat] = useState([]);
   // Set isLoading state for loaders and spinners
+  
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async () => {
@@ -27,6 +31,9 @@ const useUserData = (schoolID) => {
       // Fetch users added today
       const usersAddedTodayResponse = await instance.get(`/api/v1/auth/${schoolID}/user-created-today`);
       setUsersAddedToday(usersAddedTodayResponse.data);
+
+      const userStats = await instance.get(`/api/v1/auth/${schoolID}/getUsersStats`);
+      setUserStat(userStats.data)
 
       setIsLoading(false);
     } catch (error) {
@@ -71,7 +78,7 @@ const useUserData = (schoolID) => {
     }
   };
 
-  return { topUsers, allUsers, usersAddedToday, isLoading, createUser, modifyUser };
+  return { topUsers, allUsers, usersAddedToday, isLoading,userStat, createUser, modifyUser };
 };
 
 export default useUserData;

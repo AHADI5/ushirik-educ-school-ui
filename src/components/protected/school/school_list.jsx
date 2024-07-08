@@ -40,8 +40,8 @@ export default function Schools () {
     <div className="login-section schools flex">
       <div className="schools-list">
         <h2 className="form-title mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
-          Connectez-vous
-          {console.log ('bla bla bla welcome')}
+          Bienvenue
+          {/* {console.log ('bla bla bla welcome')} */}
         </h2>
         <p className="title">
           Vous pouvez administrer plusieurs écoles avec partir d'une seule adresse mail
