@@ -14,7 +14,8 @@ import CommonHeader from "./components/common/common_components/lay_outs/Header/
 import AllUser from "./components/protected/user/all_user_table";
 import UserDetails from "./components/protected/user/user_details";
 import SchoolInformation from "./components/protected/school/school_details";
-import ClassRooms from "./components/protected/class_room/class_room_data";
+import SchoolYearsPage from  "./components/protected/school/school_years"
+import  ClassroomsManagement from "./components/protected/class_room/class_rooms";
 
 import DirectorSideBar from "./components/common/common_components/lay_outs/side_bar/dir_side_bar";
 import DirectorDashBoard from "./components/protected/dash_board/direction/directorDashBoard";
@@ -108,10 +109,24 @@ function App() {
                 authed={authed}
                 requiredRole="ADMIN"
               >
-                <ClassRooms />
+                < ClassroomsManagement />
               </PrivateRoute>
             }
           />
+          
+          <Route
+            path="schoolyears"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="ADMIN"
+              >
+                <SchoolYearsPage/>
+              </PrivateRoute>
+            }
+          />
+
         </Route>
 
         {/* Director routes */}

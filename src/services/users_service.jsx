@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import instance from "./axios";
-import { useParams } from "react-router-dom";
+
 
 const useUserData = (schoolID) => {
-    const param = useParams()
+
   // Set top user state variable to an empty array
   const [topUsers, setTopUsers] = useState([]);
   // Set all users state variable to an empty array
@@ -27,6 +27,7 @@ const useUserData = (schoolID) => {
       // Fetch all users
       const allUsersResponse = await instance.get(`/api/v1/auth/${schoolID}/users`);
       setAllUsers(allUsersResponse.data);
+      console.log("All users number  " , allUsersResponse)
 
       // Fetch users added today
       const usersAddedTodayResponse = await instance.get(`/api/v1/auth/${schoolID}/user-created-today`);

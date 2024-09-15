@@ -50,8 +50,10 @@
     "react-scripts": "5.0.1",
     "react-social-icons": "^6.16.0",
     "react-tabs": "^6.0.2",
+    "school_ui_app": "file:",
     "uuid": "^9.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",
