@@ -1,11 +1,13 @@
-import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, NavLink } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 import logo from '../../../../../assets/img/ushirik-logo.svg';
 
 export default function AppMenu({ menus }) {
   return (
-    <div id="application-sidebar" className="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] w-55 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+    <div
+      id="application-sidebar"
+      className="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] w-55 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300"
+    >
       <div className="">
         <div className="logo-name flex flex-col justify-center items-center">
           <div className="logo-nav h-8 w-8">
@@ -22,12 +24,14 @@ export default function AppMenu({ menus }) {
             <NavLink
               key={index}
               to={item.link}
-              end={item.menu === "Accueil"} // Apply end prop directly
+              end={item.menu === "Accueil"}
               className={({ isActive }) =>
-                `flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 ${isActive ? "bg-gray-100 text-blue-500" : ""}` // Apply active classes
+                `flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 ${
+                  isActive ? "bg-gray-100 text-blue-500" : ""
+                }`
               }
             >
-              <FontAwesomeIcon icon={item.icon} />
+              {item.icon}
               <span>{item.menu}</span>
             </NavLink>
           ))}

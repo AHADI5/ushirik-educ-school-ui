@@ -16,7 +16,7 @@ const formatDate = (date) => dayjs(date).format('DD/MM/YYYY');
 const createNewSemester = () => ({
   startingDate: '',
   endingDate: '',
-  periods: [createNewPeriod()]
+  semesterPeriodList: [createNewPeriod()]
 });
 
 const createNewPeriod = () => ({
@@ -90,6 +90,7 @@ export default function SchoolYearManagement() {
       if (selectedYear) {
         // Update a specific year if selected
         await updateSchoolYear(selectedYear.schoolYearID, newSchoolYears[0]);
+        console.log("updated  schoolYear ", newSchoolYears[0])
       } else {
         // Check if you want to add another year before submitting
         if (newSchoolYears.length === 0) {
@@ -98,6 +99,7 @@ export default function SchoolYearManagement() {
 
         // Register multiple school years
         await registerSchoolYears(schoolID, newSchoolYears);
+        console.log("updated  schoolYear ", newSchoolYears)
       }
 
       // Fetch and update the list of school years after saving
@@ -137,10 +139,10 @@ export default function SchoolYearManagement() {
       schoolYear: year.schoolYear,
       startingDate: dayjs(year.startingDate).format('YYYY-MM-DD'),
       endingDate: dayjs(year.endingDate).format('YYYY-MM-DD'),
-      semesters: year.semestersList.map(semester => ({
+      semesters: (year.semestersList || []).map(semester => ({
         startingDate: dayjs(semester.startingDate).format('YYYY-MM-DD'),
         endingDate: dayjs(semester.endingDate).format('YYYY-MM-DD'),
-        periods: semester.periodInSemesterList.map(period => ({
+        semesterPeriodList: (semester.periodInSemesterList || []).map(period => ({
           startingDate: dayjs(period.startingDate).format('YYYY-MM-DD'),
           endingDate: dayjs(period.endingDate).format('YYYY-MM-DD')
         }))
@@ -171,7 +173,7 @@ export default function SchoolYearManagement() {
     const { value } = event.target;
     setNewSchoolYears((prevYears) => {
       const updatedYears = [...prevYears];
-      updatedYears[yearIndex].semesters[semesterIndex].periods[periodIndex][key] = value;
+      updatedYears[yearIndex].semesters[semesterIndex].semesterPeriodList[periodIndex][key] = value;
       return updatedYears;
     });
   };
@@ -187,7 +189,7 @@ export default function SchoolYearManagement() {
   const handleAddPeriod = (yearIndex, semesterIndex) => {
     setNewSchoolYears((prevYears) => {
       const updatedYears = [...prevYears];
-      updatedYears[yearIndex].semesters[semesterIndex].periods.push(createNewPeriod());
+      updatedYears[yearIndex].semesters[semesterIndex].semesterPeriodList.push(createNewPeriod());
       return updatedYears;
     });
   };
@@ -214,7 +216,7 @@ export default function SchoolYearManagement() {
             Années Scolaires en Cours
           </Typography>
           <Grid container spacing={2} sx={{ overflow: 'auto', maxHeight: '400px', width: '150rem' }}>
-            {schoolYears
+            {Array.isArray(schoolYears) && schoolYears
               .filter((year) => year.schoolYearStatus === 'PROGRESS')
               .map((year) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={year.schoolYearID}>
@@ -268,7 +270,7 @@ export default function SchoolYearManagement() {
           </Typography>
           <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
             <Grid container spacing={2}>
-              {schoolYears.filter(year => year.schoolYearStatus !== 'PROGRESS').map((year) => (
+              {Array.isArray(schoolYears) && schoolYears.filter(year => year.schoolYearStatus !== 'PROGRESS').map((year) => (
                 <Grid item xs={12} sm={6} md={4} key={year.schoolYearID}>
                   <Card sx={{ p: 2, boxShadow: 1, border: 'none' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -326,7 +328,7 @@ export default function SchoolYearManagement() {
       <Dialog open={openForm} onClose={handleCloseForm} maxWidth="md" fullWidth>
         <DialogTitle>{selectedYear ? 'Modifier' : 'Ajouter'} Année Scolaire</DialogTitle>
         <DialogContent>
-          {newSchoolYears.map((schoolYear, yearIndex) => (
+          {Array.isArray(newSchoolYears) && newSchoolYears.map((schoolYear, yearIndex) => (
             <Box key={yearIndex} sx={{ mb: 4 }}>
               <TextField
                 label="Année Scolaire"
@@ -361,7 +363,7 @@ export default function SchoolYearManagement() {
                 </Grid>
               </Grid>
               <Box sx={{ mt: 3 }}>
-                {schoolYear.semesters.map((semester, semesterIndex) => (
+                {Array.isArray(schoolYears) && schoolYear.semesters.map((semester, semesterIndex) => (
                   <Card key={semesterIndex} sx={{ p: 2, mb: 3, boxShadow: 2 }}>
                     <Typography variant="h6" gutterBottom>
                       Semestre {semesterIndex + 1}
@@ -391,7 +393,7 @@ export default function SchoolYearManagement() {
                       </Grid>
                     </Grid>
                     <Box sx={{ mt: 2 }}>
-                      {semester.periods.map((period, periodIndex) => (
+                      {semester.semesterPeriodList.map((period, periodIndex) => (
                         <Card key={periodIndex} sx={{ p: 2, mb: 2, boxShadow: 1 }}>
                           <Typography variant="subtitle1" gutterBottom>
                             Période {periodIndex + 1}

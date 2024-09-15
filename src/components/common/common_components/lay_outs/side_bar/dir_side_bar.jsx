@@ -1,35 +1,34 @@
-import { Outlet } from "react-router-dom";
+import React from "react";
+import { Outlet, useParams } from "react-router-dom";
 import AppMenu from "./app_side_bar";
 
-import { faHomeAlt,
-    faUserAlt ,
- 
-    faNewspaper ,
-    faUserGroup,
-    faChalkboardTeacher,
-    faCalendarWeek
-    
-  } from "@fortawesome/free-solid-svg-icons";   
-import { useParams } from "react-router-dom";
+// Import MUI icons
+import HomeIcon from "@mui/icons-material/Home";
+import GroupIcon from "@mui/icons-material/Group";
+import ArticleIcon from "@mui/icons-material/Article";
+import SchoolIcon from "@mui/icons-material/School";
+import EventIcon from "@mui/icons-material/Event";
+import RuleIcon from "@mui/icons-material/Gavel"; // for regulations
+
 export default function DirectorSideBar() {
-    const params  = useParams() 
-    const menuComponents = [
-        { menu: "Accueil", link: `/schoolDirection/${params['schoolID']}`, icon: faHomeAlt },
-        { menu: "Classes", link: `/schoolDirection/${params['schoolID']}/classrooms/`, icon: faUserAlt },
-        { menu: "Communiqués", link: `/schoolDirection/${params['schoolID']}/communique-all`, icon: faNewspaper },
-        { menu: "Elèves", link: `/schoolDirection/${params['schoolID']}/students`, icon: faUserGroup }, 
-        { menu: "Evénéments", link: `/schoolDirection/${params['schoolID']}/events`, icon: faCalendarWeek },
-        { menu: "Cours", link: `/schoolDirection/${params['schoolID']}/courses`, icon: faChalkboardTeacher }, 
-        { menu: "Enseigants", link: `/schoolDirection/${params['schoolID']}/enseignants`, icon: faChalkboardTeacher },
-        { menu: "Reglememnts", link: `/schoolDirection/${params['schoolID']}/rules`, icon: faChalkboardTeacher },
-       
-    ];
-    return (
-        <>
-            
-             <AppMenu menus={menuComponents}/>
-             <Outlet/>
-             
-        </>
-    )
+  const params = useParams();
+
+  // Ensure you're only using JSX components (MUI icons)
+  const menuComponents = [
+    { menu: "Accueil", link: `/schoolDirection/${params['schoolID']}`, icon: <HomeIcon /> },
+    { menu: "Classes", link: `/schoolDirection/${params['schoolID']}/classrooms/`, icon: <GroupIcon /> },
+    { menu: "Communiqués", link: `/schoolDirection/${params['schoolID']}/communique-all`, icon: <ArticleIcon /> },
+    { menu: "Elèves", link: `/schoolDirection/${params['schoolID']}/students`, icon: <GroupIcon /> },
+    { menu: "Evénéments", link: `/schoolDirection/${params['schoolID']}/events`, icon: <EventIcon /> },
+    { menu: "Cours", link: `/schoolDirection/${params['schoolID']}/courses`, icon: <SchoolIcon /> },
+    { menu: "Enseigants", link: `/schoolDirection/${params['schoolID']}/enseignants`, icon: <SchoolIcon /> },
+    { menu: "Reglememnts", link: `/schoolDirection/${params['schoolID']}/rules`, icon: <RuleIcon /> },
+  ];
+
+  return (
+    <>
+      <AppMenu menus={menuComponents} />
+      <Outlet />
+    </>
+  );
 }
