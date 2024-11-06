@@ -14,8 +14,8 @@ import CommonHeader from "./components/common/common_components/lay_outs/Header/
 import AllUser from "./components/protected/user/all_user_table";
 import UserDetails from "./components/protected/user/user_details";
 import SchoolInformation from "./components/protected/school/school_details";
-import SchoolYearsPage from  "./components/protected/school/school_years"
-import  ClassroomsManagement from "./components/protected/class_room/class_rooms";
+import SchoolYearsPage from "./components/protected/school/school_years"
+import ClassroomsManagement from "./components/protected/class_room/class_rooms";
 
 import DirectorSideBar from "./components/common/common_components/lay_outs/side_bar/dir_side_bar";
 import DirectorDashBoard from "./components/protected/dash_board/direction/directorDashBoard";
@@ -24,20 +24,25 @@ import CommuniqueDetails from "./components/protected/communique/communique_deta
 
 import ClassRoomsLayout from "./components/protected/class_room_management/layouts/class_room_layout";
 import Overview from "./components/protected/class_room_management/overview";
-import ClassroomStudentList from "./components/protected/class_room_management/students";
+import ClassroomStudentList from "./components/protected/class_room_management/new_version/students";
 import ClassRoomsCourses from "./components/protected/class_room_management/courses";
 import ClassRoomsTimeTable from "./components/protected/class_room_management/time_table";
 import ClassRoomsStudentMax from "./components/protected/class_room_management/student_max";
 import ClassRoomsDiscipline from "./components/protected/class_room_management/discipline";
 import ClassRoomEvents from "./components/protected/class_room_management/events";
 import TabLayout from "./components/protected/class_room_management/layouts/tabs_layout";
-import StudentTab from "./components/protected/class_room_management/students/student_tab";
+import StudentList from "./components/protected/class_room_management/new_version/students";
+
 import StudentAttendance from "./components/protected/class_room_management/students/student_attendance";
+import StudentDatabase from "./components/protected/class_room_management/students/all_students";
 import StudentDiscipline from "./components/protected/class_room_management/students/student_discipline";
 import TeachersManagment from "./components/protected/teachers/teachers_list";
 import AllCoursesList from "./components/protected/courses/all_course_list";
 import SchoolEvents from "./components/events/school_calendar";
 import SchoolRules from "./components/protected/school_rules/school_rules";
+import ClassroomList from "./components/protected/class_room_management/new_version/class_rooms_list";
+import TabMenu from "./components/protected/class_room_management/new_version/classroom_tabs ";
+import ClassroomOverview from "./components/protected/class_room_management/new_version/overview";
 
 function App() {
   const { authed, userRole } = useAuth();
@@ -61,7 +66,7 @@ function App() {
                 authed={authed}
                 requiredRole="ADMIN"
               >
-                <AdminDasBoard/>
+                <AdminDasBoard />
               </PrivateRoute>
             }
           />
@@ -113,7 +118,7 @@ function App() {
               </PrivateRoute>
             }
           />
-          
+
           <Route
             path="schoolyears"
             element={
@@ -122,7 +127,7 @@ function App() {
                 authed={authed}
                 requiredRole="ADMIN"
               >
-                <SchoolYearsPage/>
+                <SchoolYearsPage />
               </PrivateRoute>
             }
           />
@@ -165,6 +170,18 @@ function App() {
                 requiredRole="DIRECTOR"
               >
                 <TeachersManagment />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="students"
+            element={
+              <PrivateRoute
+                role={userRole}
+                authed={authed}
+                requiredRole="DIRECTOR"
+              >
+                <StudentDatabase />
               </PrivateRoute>
             }
           />
@@ -216,8 +233,74 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="classrooms" element={<ClassRoomsLayout />}>
-            <Route path=":classID" element={<TabLayout />}>
+          <Route path="classrooms" >
+            <Route
+              index
+              element={
+                <PrivateRoute
+                  role={userRole}
+                  authed={authed}
+                  requiredRole="DIRECTOR"
+                >
+                  {/* <Overview /> */}
+                  <ClassroomList />
+                </PrivateRoute>
+              }
+            />
+            <Route path=":classID" element={<TabMenu />}>
+              <Route
+                index
+                element={
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
+                    <ClassroomOverview />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="eleves"
+                element={
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
+                    <StudentList/>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="cours"
+                element={
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
+                    <ClassRoomsCourses/>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="horaires"
+                element={
+                  <PrivateRoute
+                    role={userRole}
+                    authed={authed}
+                    requiredRole="DIRECTOR"
+                  >
+                    <ClassroomOverview />
+                  </PrivateRoute>
+                }
+              />
+
+            </Route>
+            {/* <Route path=":classID" element={<TabLayout />}>
               <Route
                 index
                 element={
@@ -317,8 +400,8 @@ function App() {
                     <ClassRoomsDiscipline />
                   </PrivateRoute>
                 }
-              />
-            </Route>
+              /> */}
+            {/* </Route> */}
           </Route>
         </Route>
       </Route>
